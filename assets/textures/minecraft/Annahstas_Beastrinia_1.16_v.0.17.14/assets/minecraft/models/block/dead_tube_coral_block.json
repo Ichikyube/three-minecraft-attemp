@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+    	"particle": "block/dead_tube_coral_block",
+        "down": "block/dead_tube_coral_block_top",
+        "up": "block/dead_tube_coral_block_top",
+        "north": "block/dead_tube_coral_block",
+        "south": "block/dead_tube_coral_block",
+        "west": "block/dead_tube_coral_block",
+        "east": "block/dead_tube_coral_block"
+    }
+}

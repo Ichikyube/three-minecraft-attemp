@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+    	"particle": "block/yellow_terracotta_6",
+        "down": "block/yellow_terracotta_6",
+        "up": "block/yellow_terracotta_6",
+        "north": "block/yellow_terracotta_6",
+        "south": "block/yellow_terracotta_6",
+        "west": "block/yellow_terracotta_6",
+        "east": "block/yellow_terracotta_6"
+    }
+}

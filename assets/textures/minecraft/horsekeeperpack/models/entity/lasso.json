@@ -1,0 +1,47 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.lasso",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 3,
+				"visible_bounds_offset": [0, 0.5, 0]
+			},
+			"bones": [
+				{
+					"name": "lasso",
+					"pivot": [-7, 18, 0],
+					"rotation": [0, -90, 0]
+				},
+				{
+					"name": "big",
+					"parent": "lasso",
+					"pivot": [-7, 17, 1],
+					"cubes": [
+						{"origin": [-9, 2, -7], "size": [2, 16, 16], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "bone",
+					"parent": "lasso",
+					"pivot": [-5, 18, 0],
+					"rotation": [0, 0, 47.5],
+					"cubes": [
+						{"origin": [-6, 15, 0], "size": [23, 2, 0], "pivot": [-3, 18, 0], "rotation": [0, 0, 22.5], "uv": [20, 0]}
+					]
+				},
+				{
+					"name": "knut",
+					"parent": "lasso",
+					"pivot": [-6, 17, 0],
+					"cubes": [
+						{"origin": [-9, 16, -1], "size": [3, 3, 3], "inflate": 0.5, "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

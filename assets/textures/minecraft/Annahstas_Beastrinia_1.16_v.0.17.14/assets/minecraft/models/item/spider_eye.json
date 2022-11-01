@@ -1,0 +1,26 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "item/spider_eye"
+	},
+	"display": {
+		"gui": {
+			"scale":  [ 0.7, 0.7, 0.7 ]
+		},
+        "ground": {
+            "scale":[ 0.3, 0.3, 0.3 ]
+        },
+        "head": {
+            "scale":[ 0.4, 0.4, 0.4]
+        },
+        "thirdperson_righthand": {
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "firstperson_righthand": {
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "fixed": {
+            "scale": [ 0.6, 0.6, 0.6 ]
+        }
+    }
+}

@@ -1,0 +1,67 @@
+{
+	"format_version": "1.14.0",
+	"sound_definitions": {
+		"revolver.cocking": {
+			"category": "player",
+			"sounds": ["sounds/random/revolver_cocking"]
+		},
+		"revolver.tricks0": {
+			"category": "player",
+			"sounds": ["sounds/random/revolver_tricks0"]
+		},
+		"revolver.tricks1": {
+			"category": "player",
+			"sounds": ["sounds/random/revolver_tricks1"]
+		},
+		"revolver.tricks2": {
+			"category": "player",
+			"volume": 0.00001,
+			"sounds": ["sounds/random/revolver_tricks2"]
+		},
+		"cigar.smoke": {
+			"category": "player",
+			"sounds": ["sounds/random/cigar_smoke"]
+		},
+		"shotgun.break": {
+			"category": "ui",
+			"volume": 0.0001,
+			"sounds": ["sounds/shotgun/shotgun_break"]
+		},
+		"shotgun.shells": {
+			"category": "player",
+			"sounds": ["sounds/shotgun/shotgun_shells"]
+		},
+		"shotgun.hammer": {
+			"category": "player",
+			"sounds": ["sounds/shotgun/shotgun_hammer"]
+		},
+		"piano.cchord": {
+			"category": "player",
+			"sounds": ["sounds/piano/piano_cchord"]
+		},
+		"piano.dchord": {
+			"category": "player",
+			"sounds": ["sounds/piano/piano_dchord"]
+		},
+		"piano.echord": {
+			"category": "player",
+			"sounds": ["sounds/piano/piano_echord"]
+		},
+		"piano.fchord": {
+			"category": "player",
+			"sounds": ["sounds/piano/piano_fchord"]
+		},
+		"piano.gchord": {
+			"category": "player",
+			"sounds": ["sounds/piano/piano_gchord"]
+		},
+		"piano.achord": {
+			"category": "player",
+			"sounds": ["sounds/piano/piano_achord"]
+		},
+		"piano.bchord": {
+			"category": "player",
+			"sounds": ["sounds/piano/piano_bchord"]
+		}
+	}
+}

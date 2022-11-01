@@ -1,0 +1,28 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"ambientocclusion": false,
+	"elements": [ 	 
+		{
+			"__comment": "Plane1",
+			"from": [ 13.5, 0, 2.25 ],
+			"to": [ 13.501, 16, 19.25 ],
+			"rotation": { "origin": [ 13.5, 0, 2.25 ], "axis": "y", "angle": -45 },
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 2, 4.5, 14, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 14, 4.5, 2, 16 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Plane2",
+			"from": [ 3.25, 0, 2 ],
+			"to": [ 20.25, 16, 2.001 ],
+			"rotation": { "origin": [ 3.25, 0, 2 ], "axis": "y", "angle": -45 },
+			"shade": false,
+			"faces": {
+				"north": { "uv": [ 14, 4.5, 2, 16 ], "texture": "#texture" },
+				"south": { "uv": [ 2, 4.5, 14, 16 ], "texture": "#texture" }
+			}
+		}
+	]
+}

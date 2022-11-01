@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/umbran_planks" },
+		{ "model": "biomesoplenty:block/umbran_planks_1" },
+		{ "model": "biomesoplenty:block/umbran_planks_2" },
+		{ "model": "biomesoplenty:block/umbran_planks_3" }
+		]
+    }
+}

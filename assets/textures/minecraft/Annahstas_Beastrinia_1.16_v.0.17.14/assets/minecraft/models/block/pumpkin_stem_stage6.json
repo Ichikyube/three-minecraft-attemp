@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/stem_growth6",
+	"textures": {
+		"particle": "block/mini_pumpkin_side",
+		"stem": "block/pumpkin_stem_6",
+		"stem2": "block/pumpkin_stem_6_1",
+		"side": "block/mini_pumpkin_side",
+		"bottom": "block/mini_pumpkin_bottom",
+		"top": "block/mini_pumpkin_top"
+	}
+}

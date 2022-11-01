@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+            border: 1px solid black;
+            width : 50px;
+            height: 50px;
+        }
+        .wrapper {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="box" id="cell01"></div>
+        <div class="box" id="cell02"></div>
+        <div class="box" id="cell03"></div>
+    </div>
+    <div class="wrapper">
+        <div class="box" id="cell04"></div>
+        <div class="box" id="cell05"></div>
+        <div class="box" id="cell06"></div>
+    </div>
+    <div class="wrapper">
+        <div class="box" id="cell07"></div>
+        <div class="box" id="cell08"></div>
+        <div class="box" id="cell09"></div>
+    </div>
+    <script>
+        window.addEventListener('mousedown', (e) => print(e), false);
+        function print(e) {
+            console.log(e);
+            console.log(e.target);
+            if(e.target.style.backgroundColor == "green")   e.target.style.backgroundColor = "white";
+            else e.target.style.backgroundColor = "green";
+        }
+
+    </script>
+</body>
+</html>

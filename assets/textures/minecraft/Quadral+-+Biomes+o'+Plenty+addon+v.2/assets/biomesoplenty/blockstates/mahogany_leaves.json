@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "": [
+			{ "model": "biomesoplenty:block/mahogany_leaves" },
+			{ "model": "biomesoplenty:block/mahogany_leaves_1" },
+			{ "model": "biomesoplenty:block/mahogany_leaves_2" }
+		
+		]
+    }
+}

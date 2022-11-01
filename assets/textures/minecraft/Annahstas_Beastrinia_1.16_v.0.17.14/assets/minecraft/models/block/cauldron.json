@@ -1,0 +1,69 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"ambientocclusion": true,
+	"textures": {
+		"particle": "block/cauldron_side",
+		"top": "block/cauldron_inside_sink",
+		"bottom": "block/cauldron_bottom",
+		"side": "block/cauldron_side"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Element",
+			"from": [ 0, 0, 0 ],
+			"to": [ 3, 16, 16 ],
+			"faces": {
+				"down": { "uv": [ 0, 0, 3, 16 ], "texture": "#bottom" },
+				"up": { "uv": [ 0, 0, 3, 16 ], "texture": "#top", "cullface": "up" },
+				"north": { "uv": [ 13, 0, 16, 16 ], "texture": "#side", "cullface": "north" },
+				"south": { "uv": [ 0, 0, 3, 16 ], "texture": "#side", "cullface": "south" },
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#side", "cullface": "west" },
+				"east": { "uv": [ 6.5, 0, 8, 12.5 ], "texture": "#side" }
+			}
+		},
+		{
+			"__comment": "Element",
+			"from": [ 3, 0, 3 ],
+			"to": [ 13, 10, 13 ],
+			"faces": {
+				"down": { "uv": [ 3, 3, 13, 13 ], "texture": "#bottom" },
+				"up": { "uv": [ 3, 3.5, 12.5, 12 ], "texture": "#top", "cullface": "up" }
+			}
+		},
+		{
+			"__comment": "Element",
+			"from": [ 13, 0, 0 ],
+			"to": [ 16, 16, 16 ],
+			"faces": {
+				"down": { "uv": [ 13, 0, 16, 16 ], "texture": "#bottom" },
+				"up": { "uv": [ 13, 0, 16, 16 ], "texture": "#top", "cullface": "up" },
+				"north": { "uv": [ 0, 0, 3, 16 ], "texture": "#side", "cullface": "north" },
+				"south": { "uv": [ 13, 0, 16, 16 ], "texture": "#side", "cullface": "south" },
+				"west": { "uv": [ 6.5, 0, 7.5, 12.5 ], "texture": "#side" },
+				"east": { "uv": [ 0, 0, 16, 16 ], "texture": "#side", "cullface": "east" }
+			}
+		},
+		{
+			"__comment": "Element",
+			"from": [ 3, 0, 0 ],
+			"to": [ 13, 16, 3 ],
+			"faces": {
+				"down": { "uv": [ 3, 13, 13, 16 ], "texture": "#bottom" },
+				"up": { "uv": [ 3, 0, 13, 3 ], "texture": "#top", "cullface": "up" },
+				"north": { "uv": [ 3, 0, 13, 16 ], "texture": "#side", "cullface": "north" },
+				"south": { "uv": [ 6.5, 0, 8, 12.5 ], "texture": "#side" }
+			}
+		},
+		{
+			"__comment": "Element",
+			"from": [ 3, 0, 13 ],
+			"to": [ 13, 16, 16 ],
+			"faces": {
+				"down": { "uv": [ 3, 0, 13, 3 ], "texture": "#bottom" },
+				"up": { "uv": [ 3, 13, 13, 16 ], "texture": "#top", "cullface": "up" },
+				"north": { "uv": [ 6, 0, 6.5, 12.5 ], "texture": "#side" },
+				"south": { "uv": [ 3, 0, 13, 16 ], "texture": "#side", "cullface": "south" }
+			}
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+    "parent": "block/cube",
+    "display": {
+        "firstperson_righthand": {
+            "rotation": [ 0, 135, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.40, 0.40, 0.40 ]
+        }
+    },
+    "textures": {
+        "particle": "block/bookshelf",
+        "down": "block/bookshelf_bottom",
+        "up": "block/bookshelf_top",
+        "north": "block/bookshelf",
+        "east": "block/bookshelf",
+        "south": "block/bookshelf",
+        "west": "block/bookshelf"
+    }
+}
+

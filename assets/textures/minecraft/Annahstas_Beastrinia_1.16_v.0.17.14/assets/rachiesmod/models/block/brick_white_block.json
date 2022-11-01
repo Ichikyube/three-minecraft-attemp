@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    	"particle": "rachiesmod:blocks/brick_white_block",
+        "down": "rachiesmod:blocks/brick_white_block_top",
+        "up": "rachiesmod:blocks/brick_white_block_top",
+        "north": "rachiesmod:blocks/brick_white_block",
+        "south": "rachiesmod:blocks/brick_white_block",
+        "west": "rachiesmod:blocks/brick_white_block",
+        "east": "rachiesmod:blocks/brick_white_block"
+  }
+}

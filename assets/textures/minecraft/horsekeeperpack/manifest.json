@@ -1,0 +1,18 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "A wild west theme resource pack.\n made by Groundbeefmc",
+        "name": "Horse Keeper",
+        "uuid": "4e906fee-c94c-11ec-9d64-0242ac120002",
+        "version": [0, 0, 1],
+        "min_engine_version": [ 1, 18, 0 ]
+    },
+    "modules": [
+        {
+            "description": "",
+            "type": "resources",
+            "uuid": "4e90720a-c94c-11ec-9d64-0242ac120002",
+            "version": [0, 0, 1]
+        }
+    ]
+}

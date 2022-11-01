@@ -1,0 +1,115 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"parent": "block/block",
+	"textures": {
+		"particle": "block/dark_oak_door_top",
+		"texture": "block/dark_oak_fence",
+		"texture1": "block/dark_oak_fence2",
+		"texture2": "block/dark_oak_fence3"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Box1",
+			"from": [ 0, 9, 6 ],
+			"to": [ 4.5, 11, 10 ],
+			"faces": {
+				"down": { "uv": [ 9, 0, 13, 8 ], "texture": "#texture", "rotation": 90 },
+				"up": { "uv": [ 9, 0, 13, 8 ], "texture": "#texture", "rotation": 90 },
+				"north": { "uv": [ 7, 0, 9, 8 ], "texture": "#texture", "rotation": 270 },
+				"south": { "uv": [ 7, 0, 9, 8 ], "texture": "#texture", "rotation": 270 },
+				"west": { "uv": [ 3, 14, 7, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 3, 14, 7, 16 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Box1",
+			"from": [ 12, 0, 6.75 ],
+			"to": [ 14.5, 9, 9.25 ],
+			"faces": {
+				"down": { "uv": [ 0, 13.5, 2.5, 16 ], "texture": "#texture1", "rotation": 180 },
+				"up": { "uv": [ 0, 1.5, 2.5, 4 ], "texture": "#texture1", "rotation": 180 },
+				"north": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"south": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"west": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"east": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" }
+			}
+		},
+		{
+			"__comment": "Box1",
+			"from": [ 12, 0, 1.375 ],
+			"to": [ 14.5, 9, 3.875 ],
+			"faces": {
+				"down": { "uv": [ 0, 13.5, 2.5, 16 ], "texture": "#texture1", "rotation": 180 },
+				"up": { "uv": [ 0, 1.5, 2.5, 4 ], "texture": "#texture1", "rotation": 180 },
+				"north": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"south": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"west": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"east": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" }
+			}
+		},
+		{
+			"__comment": "Box1",
+			"from": [ 1.5, 0, 6.75 ],
+			"to": [ 4, 9, 9.25 ],
+			"faces": {
+				"down": { "uv": [ 0, 13.5, 2.5, 16 ], "texture": "#texture1", "rotation": 180 },
+				"up": { "uv": [ 0, 1.5, 2.5, 4 ], "texture": "#texture1", "rotation": 180 },
+				"north": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"south": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"west": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" },
+				"east": { "uv": [ 0, 4, 2.5, 13.5 ], "texture": "#texture1" }
+			}
+		},
+		{
+			"__comment": "Box1",
+			"from": [ 11.25, 9, 0 ],
+			"to": [ 15.25, 11, 10 ],
+			"faces": {
+				"down": { "uv": [ 9, 0, 13, 10 ], "texture": "#texture2" },
+				"up": { "uv": [ 13, 0, 9, 10 ], "texture": "#texture2", "rotation": 180 },
+				"north": { "uv": [ 7, 0, 9, 8 ], "texture": "#texture", "rotation": 270 },
+				"south": { "uv": [ 7, 0, 9, 8 ], "texture": "#texture", "rotation": 270 },
+				"west": { "uv": [ 3, 14, 7, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 3, 14, 7, 16 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Box1",
+			"from": [ 15.25, 9, 6 ],
+			"to": [ 16, 11, 10 ],
+			"faces": {
+				"down": { "uv": [ 9, 0, 13, 8 ], "texture": "#texture", "rotation": 90 },
+				"up": { "uv": [ 9, 0, 13, 8 ], "texture": "#texture", "rotation": 90 },
+				"north": { "uv": [ 7, 0, 9, 8 ], "texture": "#texture", "rotation": 270 },
+				"south": { "uv": [ 7, 0, 9, 8 ], "texture": "#texture", "rotation": 270 },
+				"west": { "uv": [ 3, 14, 7, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 3, 14, 7, 16 ], "texture": "#texture" }
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation":  [ 75, 45, 0 ],
+			"translation":  [ 0, 2.5, 0 ],
+			"scale":  [ 0.375, 0.375, 0.375 ]
+		},
+		"firstperson_righthand": {
+			"rotation":  [ 0, 135, 0 ],
+			"translation":  [ 0, 1.5, 0 ],
+			"scale":  [ 0.3, 0.4, 0.3 ]
+		},
+		"firstperson_lefthand": {
+			"rotation":  [ 0, 135, 0 ],
+			"translation":  [ 0, 1.5, 0 ],
+			"scale":  [ 0.3, 0.4, 0.3 ]
+		},
+		"gui": {
+			"rotation":  [ 30, 45, 0 ],
+			"translation":  [ 0, 1.5, 0 ],
+			"scale":  [ 0.9, 0.9, 0.9 ]
+		},
+		"fixed": {
+			"scale":  [ 0.5, 0.5, 0.5 ]
+		}
+	}
+}

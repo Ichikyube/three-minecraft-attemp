@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "": [
+			{ "model": "biomesoplenty:block/magic_leaves" },
+			{ "model": "biomesoplenty:block/magic_leaves_1" },
+			{ "model": "biomesoplenty:block/magic_leaves_2" },
+			{ "model": "biomesoplenty:block/magic_leaves_3" }
+		
+		]
+    }
+}

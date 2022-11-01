@@ -1,0 +1,19 @@
+{
+    "parent": "block/cube",
+    "display": {
+        "firstperson_righthand": {
+            "rotation": [ 0, 135, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.40, 0.40, 0.40 ]
+        }
+    },
+    "textures": {
+        "particle": "block/melon_side",
+        "down": "block/melon_bottom",
+        "up": "block/melon_top",
+        "north": "block/melon_side",
+        "east": "block/melon_side",
+        "south": "block/melon_side",
+        "west": "block/melon_side"
+    }
+}

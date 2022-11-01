@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+    	"particle": "block/tube_coral_block",
+        "down": "block/tube_coral_block_top",
+        "up": "block/tube_coral_block_top",
+        "north": "block/tube_coral_block",
+        "south": "block/tube_coral_block",
+        "west": "block/tube_coral_block",
+        "east": "block/tube_coral_block"
+    }
+}

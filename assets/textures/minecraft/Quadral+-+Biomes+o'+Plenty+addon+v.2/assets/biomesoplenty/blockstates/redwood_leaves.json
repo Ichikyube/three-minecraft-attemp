@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "": [
+			{ "model": "biomesoplenty:block/redwood_leaves" },
+			{ "model": "biomesoplenty:block/redwood_leaves_1" },
+			{ "model": "biomesoplenty:block/redwood_leaves_2" },
+			{ "model": "biomesoplenty:block/redwood_leaves_3" }
+		
+		]
+    }
+}

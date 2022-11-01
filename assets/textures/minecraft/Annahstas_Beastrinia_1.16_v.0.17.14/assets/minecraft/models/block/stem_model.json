@@ -1,0 +1,27 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "#stem"
+	},
+	"elements": [ 	 
+		{
+			"from": [ 8, 0, -8 ],
+			"to": [ 8.001, 32, 24 ],
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem" },
+				"east": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem" }
+			}
+		},
+		{
+			"from": [ -8, 0, 8 ],
+			"to": [ 24, 32, 8.001 ],
+			"shade": false,
+			"faces": {
+				"north": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem" },
+				"south": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem" }
+			}
+		}
+	]
+}

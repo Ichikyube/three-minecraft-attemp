@@ -1,0 +1,16 @@
+{
+    "variants": {
+        "": [
+		    { "model": "block/netherrack", "weight": 10 },
+		    { "model": "block/netherrack_1", "weight": 10 },
+			{ "model": "block/netherrack_2", "weight": 10 },
+			{ "model": "block/netherrack_3", "weight": 10 },
+			{ "model": "block/netherrack_4", "weight": 10 },
+			{ "model": "block/netherrack_5", "weight": 10 },
+			{ "model": "block/netherrack_6", "weight": 10 },
+			{ "model": "block/netherrack_7", "weight": 10 },
+			{ "model": "block/netherrack_8", "weight": 10 },
+			{ "model": "block/netherrack_9", "weight": 10 }
+        ]
+    }
+}

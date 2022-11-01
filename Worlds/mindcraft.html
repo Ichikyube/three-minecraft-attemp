@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <div id="blocker">
+        <div id="instructions">
+            <button id="tour" type="button" hidden>Simulated Tour</button>
+            <p style="font-size:36px">
+                Click to play
+            </p>
+            <p>
+                Move: WASD<br />
+                Jump: SPACE<br />
+                Look: MOUSE
+            </p>
+        </div>
+    </div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../assets/js/three.module.js",
+                "vendor/": "../assets/vendor/",
+                "addons/": "../assets/jsm/",
+                "parts/": "../Components/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as CANNON  from 'vendor/cannon-es.js';
+        import * as THREE from 'three';
+        import * as BufferGeometryUtils from 'addons/utils/BufferGeometryUtils.js';
+        //controls
+        import {
+            PointerLockControls
+        } from 'addons/controls/PointerLockControls.js';
+        import {
+            GLTFLoader
+        } from 'addons/loaders/GLTFLoader.js';
+        import {
+            ParametricGeometry
+        } from 'addons/geometries/ParametricGeometry.js';
+        import {
+            ParametricGeometries
+        } from 'addons/geometries/ParametricGeometries.js';
+        import { Gyroscope } from 'addons/misc/Gyroscope.js';
+        import {
+            MD2CharacterComplex
+        } from 'addons/misc/MD2CharacterComplex.js';
+        import {
+            ShadowMapViewer
+        } from 'addons/utils/ShadowMapViewer.js';
+        import {
+            Octree
+        } from 'addons/math/Octree.js';
+        import {
+            OctreeHelper
+        } from 'addons/helpers/OctreeHelper.js';
+        import {
+            TWEEN
+        } from 'addons/libs/tween.module.min.js';
+        import {
+            Player
+        } from 'parts/Player/SimpleFpsPlayer.js';
+        import {
+            initScene,
+            initRender,
+            render,
+            initCamera,
+            initPostFX
+        } from 'parts/Render.js';
+        import {
+            buildingWorldofBlocks
+        } from 'parts/Blocks.js';
+        //add-on function
+        function degrees_to_radians(degrees) {
+            var pi = Math.PI;
+            return degrees * (pi / 180);
+        }
+        const worldOctree = new Octree({
+                undeferred: true,
+                depthMax: Infinity,
+                objectsThreshold: 8,
+                overlapPct: 0.15
+            });
+        ////////////// Global Variables ///////////////////////////////
+        // Cannon Physics
+        var world = new CANNON.World(),
+            blocks = [],
+            blockMeshes = [],
+            maxBlocks = 24;
+        var playerPerson,
+          playerMesh,
+          playerOrigin = new THREE.Vector3(),
+          playerControls = {
+            moveLeft:  false, moveForward:  false, 
+            moveRight: false, moveBackward: false },
+          debugPlayerMesh,
+          numPlayerSkins,
+          playerSkin = 11,
+          playerLimit = 4000;
+
+        /** Materials and textures **/
+        let imgLoader = new THREE.TextureLoader();
+        // Floor plane texture.
+        var floorTexture = imgLoader.load("../assets/textures/water.jpg");
+        floorTexture.repeat.set(0.5, 0.8);
+        floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+        var floorMaterial = new THREE.MeshPhongMaterial({
+            ambient: 0x444444,
+            color: 0x66aa66,
+            shininess: 150,
+            specular: 0x888888,
+            shading: THREE.SmoothShading,
+            map: floorTexture
+        });
+
+        // Stone block texture.
+        var blockMaterial = floorMaterial.clone();
+        blockMaterial.setValues({
+            color: 0xaaaaaa
+        });
+        // Create physics material.
+        var physicsMaterial = new CANNON.Material();
+
+        // Define physics material contacts.
+        var contactMaterial = new CANNON.ContactMaterial(
+            physicsMaterial, physicsMaterial, {
+          friction: 1.0,
+          restitution: 0.1,
+        });
+        // ThreeJS webGL 
+        let player, scene, sceneUI, renderer, composer, camera, cameraUI, controls;
+        var cameraTarget = new THREE.Vector3(),
+          cameraControls,
+          cameraLookAround = true,
+          cameraLimit = 2000;
+        var clock, nowMsec, lastTimeMsec;
+        var mouse_sensitivity = 0.002
+        const SHADOW_MAP_WIDTH = 548,
+            SHADOW_MAP_HEIGHT = 524;
+        const SHADOW_MAP_DLight = 1024;
+        const DsArea = 80;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        // Objects
+        const objects = [];
+        const lights = [];
+        const helpers = [];
+        const animateTasks = [];
+        const materials = [];
+        const params = []
+
+        const vertex = new THREE.Vector3();
+        const color = new THREE.Color();
+        ////////////// Global Variables ///////////////////////////////
+
+
+        ///////////// Player //////////////////////////////////////
+        var acceleration = 4.0
+        var friction = 6.0
+        ////////////////// Main App ///////////////////////////////
+        window.onload = init;
+
+        function init() {
+            // uncomment this part to see the sun
+            //var geometry = new THREE.SphereBufferGeometry( 50, 32, 32 );
+            //geometry.applyMatrix( new THREE.Matrix4().setPosition(lightPos) );
+            //var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+            //var sphere = new THREE.Mesh( geometry, material );
+            // scene.add( sphere );
+            // Create Light
+            //---------------------------------------------------//
+            /*------------Three JS basic Objects-----------------*/
+            //---------------------------------------------------//
+            scene = initScene('mineland', 'front', 'back', 'up', 'down', 'left', 'right');
+            sceneUI = new THREE.Scene();
+            renderer = initRender();
+            //renderer.autoClear = false; // To allow render overlay on top of sprited sphere
+            camera = initCamera();
+            cameraUI = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 1, 10);
+            cameraUI.position.z = 10;
+            composer = initPostFX();
+            // add the output of the render function to the HTML
+            document.body.appendChild(renderer.domElement);
+
+
+            let makePlayer = function () {
+                player = new Player(scene, camera, renderer.domElement, 16);
+            }
+            initLights(scene);
+            lights.forEach(function (light) {
+                scene.add(light);
+            })
+            objects.forEach(function (object) {
+                scene.add(object);
+            })
+            var showHelper = false;
+            if (showHelper) {
+                helpers.forEach(function (helper) {
+                    scene.add(helper);
+                    helper.parent.updateMatrixWorld();
+                    helper.update();
+                })
+            }
+            let Ground = buildingWorldofBlocks(world);
+            Ground.receiveShadow = true;
+            scene.add(Ground);
+            worldOctree.fromGraphNode(Ground);
+            makePlayer();
+
+            window.addEventListener('resize', onWindowResize);
+
+            // Add the contact materials to the world.
+            world.addContactMaterial(contactMaterial);
+            // CONFIGURE PHYSICS WORLD
+            world.quatNormalizeSkip = 0;
+            world.quatNormalizeFast = false;
+            var solver = new CANNON.GSSolver();
+            world.defaultContactMaterial.contactEquationStiffness = 1e9;
+            world.defaultContactMaterial.contactEquationRegularizationTime = 3;
+            solver.iterations = 20;
+            solver.tolerance = 0;
+            var split = true;
+            if (split)
+                world.solver = new CANNON.SplitSolver(solver);
+            else
+                world.solver = solver;
+            world.gravity.set(0, -2000, 0);
+            world.broadphase = new CANNON.NaiveBroadphase();
+
+            // CREATE A PHYSICS GROUND PLANE
+            // FLOOR PLANE
+            /*var geometry = new THREE.PlaneGeometry(16000, 16000);
+            var floor = new THREE.Mesh(geometry, floorMaterial);
+            floor.flipSided = false;
+            floor.castShadow = false;
+            floor.receiveShadow = true;
+            floor.rotation.x = -Math.PI / 2;
+            scene.add(floor);
+            const groundShape = new CANNON.Plane()
+            const groundBody = new CANNON.Body({ mass: 0, shape: groundShape, material: physicsMaterial })
+            groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
+            groundBody.position.copy(floor.position)
+            world.addBody(groundBody)*/
+
+            // PLAYERS PHYSICS
+            var size = 80;
+            var shape = new CANNON.Sphere(size);
+            playerPerson = new CANNON.Body({ mass: 25, shape: shape, material: physicsMaterial })
+            playerPerson.position.set(0, size, 0);
+            //playerPerson.linearDamping = 0.9;
+            world.addBody(playerPerson);
+
+            // BIG BLOCK
+            addBlock(10000, new THREE.Vector3(100, 100, 100), physicsMaterial, blockMaterial, new THREE.Vector3(200,
+                200, -200), false);
+
+            // CHARACTER
+            var configOgro = {
+                baseUrl: "../assets/models/md2/ogro/",
+                body: "ogro.md2",
+                skins: ["grok.jpg", "ogrobase.png", "arboshak.png",
+                    "ctf_r.png", "ctf_b.png", "darkam.png", "freedom.png",
+                    "gib.png", "gordogh.png", "igdosh.png", "khorne.png",
+                    "nabogro.png", "sharokh.png"
+                ],
+                weapons: [
+                    ["weapon.md2", "weapon.jpg"]
+                ],
+                animations: {
+                    move: "run",
+                    idle: "stand",
+                    jump: "jump",
+                    attack: "attack",
+                    crouchMove: "cwalk",
+                    crouchIdle: "cstand",
+                    crouchAttach: "crattack"
+                },
+                walkSpeed: 350,
+                crouchSpeed: 175
+            };
+
+            numPlayerSkins = configOgro.skins.length;
+
+            playerMesh = new MD2CharacterComplex();
+            playerMesh.scale = 3;
+            playerMesh.controls = playerControls;
+            playerOrigin.copy(playerMesh.root.position);
+            cameraTarget.copy(playerOrigin).setY(150);
+
+            var baseCharacter = new MD2CharacterComplex();
+            baseCharacter.scale = 3;
+
+            baseCharacter.onLoadComplete = function () {
+                var cloneCharacter = playerMesh;
+                cloneCharacter.shareParts(baseCharacter);
+                cloneCharacter.enableShadows(true);
+                //cloneCharacter.setWeapon(0);
+                cloneCharacter.setSkin(playerSkin);
+
+                scene.add(cloneCharacter.root);
+
+                //var gyro = new THREE.Gyroscope();
+                //gyro.add(camera);
+
+                //playerMesh.root.add(gyro);
+
+                // set initial player position.
+                playerMesh.root.position.x = -250;
+                playerMesh.root.position.z = -250;
+            };
+
+            baseCharacter.loadParts(configOgro);
+
+            function onWindowResize() {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                renderer.setSize(width, height);
+                composer.setSize(renderer.domElement.width, renderer.domElement.height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                //resizeShadowMapViewers();
+            }
+            clock = new THREE.Clock();
+            const STEPS_PER_FRAME = 3;
+            var stepFrequency = 120;
+            var maxDelta = 0.05; // measure time - never notify more than this.maxDelta
+            function animate() {
+                const deltaTime = Math.min(maxDelta, clock.getDelta()) / STEPS_PER_FRAME;
+                for (let i = 0; i < STEPS_PER_FRAME; i++) {
+                    player.controller(deltaTime);
+                    player.updateMovement(deltaTime, worldOctree);
+                    animateTasks.forEach(function (onTask) {
+                        onTask(deltaTime)
+                    })
+                }
+                playerMesh.update( deltaTime );
+                playerMesh.root.position.copy(playerPerson.position);
+                TWEEN.update();
+                // Players protective barrier
+                if (playerPerson instanceof CANNON.Body) {
+
+                    // TODO:
+                    // This is currently reset each frame, but it
+                    // should influence the player mesh location !!
+                    //
+                    // (Stabilize the physics bounding sphere)
+                    playerPerson.velocity.copy(new CANNON.Vec3());
+                    playerPerson.quaternion.set(1, 0, 0, 0);
+                    playerPerson.inertia.set(0, 0, 0);
+                    playerPerson.invInertia.set(0, 0, 0);
+
+                    // Set sphere to player mesh position.
+                    var p = playerMesh.root.position;
+                    playerPerson.position.set(p.x, p.y, p.z);
+
+                    // debug wireframe sphere location.
+                    // debugPlayerMesh.position.copy( player.position );
+                    // debugPlayerMesh.quaternion.copy( player.quaternion );
+                }
+
+                var j = blocks.length;
+                for (var i = 0; i < j; i++) {
+                    var body = blocks[i];
+                    var mesh = blockMeshes[i];
+                    mesh.position.copy(body.position);
+                    mesh.quaternion.copy(body.quaternion);
+                }
+
+                if (j < maxBlocks && blocks[j - 1].position.y < 700) {
+
+                    // "stone blocks keep falling on my head,
+                    // they keep falling" ;-)
+
+                    if (Math.random() - 0.5 > 0) {
+
+                        /** regular **/
+                        addBlock(500, new THREE.Vector3(60, 60, 60));
+
+                    } else {
+
+                        /** smaller **/
+                        addBlock(500, new THREE.Vector3(44, 44, 44));
+                    }
+                }
+
+                // Camera TWEEN.
+                if (!cameraLookAround) {
+
+                    // Calculate camera offset.
+                    var matrix = new THREE.Matrix4().copy(playerMesh.root.matrix);
+                    matrix.setPosition(playerOrigin)
+                    var offset = new THREE.Vector3(0, 227, -800);
+                    var cameraOffset = offset.applyMatrix4(matrix);
+
+                    // Create a smooth camera transition.
+                    new TWEEN.Tween(camera.position).to({
+                            x: cameraOffset.x,
+                            y: cameraOffset.y,
+                            z: cameraOffset.z
+                        }, 200)
+                        .interpolation(TWEEN.Interpolation.Bezier)
+                        .easing(TWEEN.Easing.Sinusoidal.InOut).start();
+
+                    // Set camera rotation.
+                    camera.lookAt(cameraTarget);
+                }
+
+
+                // player movement restrictions.
+                playerMesh.root.position.y = Math.max(playerMesh.root.position.y, playerOrigin.y);
+                if (playerMesh.root.position.length() > playerLimit) {
+                    playerMesh.root.position.setLength(playerLimit);
+                }
+
+                // Step world
+                for (var i = 0; i < Math.ceil(stepFrequency / 60); i++) {
+                    world.step(1 / stepFrequency, deltaTime);
+                }
+            }
+
+            // function for re-rendering/animating the scene
+            function loop() {
+                animate();
+                render();
+                requestAnimationFrame(loop);
+            }
+
+            loop();
+        }
+        //---------------------------------------------------//
+        /*--------------------Light--------------------------*/
+        //---------------------------------------------------//
+        function initLights() {
+            var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+            var spotLight = new THREE.SpotLight(0xffffff, 1);
+            spotLight.position.set(16, 80, 400); //16, 22, 0
+            spotLight.angle = Math.PI / 4;
+            spotLight.penumbra = 0.1;
+            spotLight.decay = 2;
+            spotLight.distance = 200;
+            spotLight.shadow.mapSize.width = 512;
+            spotLight.shadow.mapSize.height = 512;
+            spotLight.shadow.camera.near = 10;
+            spotLight.shadow.camera.far = 600;
+            spotLight.shadow.focus = 1;
+            const targetObject = new THREE.Object3D();
+            targetObject.translateX(spotLight.position.x);
+            targetObject.translateY(14);
+            targetObject.translateZ(-20);
+            spotLight.target = targetObject;
+            var spotLight2 = new THREE.SpotLight(0xFF45F6, 25);
+            spotLight2.position.set(0, 23, 0);
+            let light = new THREE.PointLight(0xf4b400, 1);
+            light.position.set(16, 78, 1.5);
+            var light1 = new THREE.PointLight(0xff0040, 4, 500);
+            var light2 = new THREE.PointLight(0x0040ff, 3, 500);
+            var light3 = new THREE.PointLight(0x80ff80, 4, 500);
+            var directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+            directionalLight.position.set(0, 41, 0);
+            lights.push(ambientLight, directionalLight, spotLight, spotLight2, targetObject, light, light1, light2,
+                light3);
+            animateTasks.push(function () { //     
+                var time = Date.now() * 0.0005;
+                light1.position.x = Math.sin(time * 0.7) * 30;
+                light1.position.y = Math.cos(time * 0.5) * 40;
+                light1.position.z = Math.cos(time * 0.3) * 30;
+                light2.position.x = Math.cos(time * 0.3) * 30;
+                light2.position.y = Math.sin(time * 0.5) * 40;
+                light2.position.z = Math.sin(time * 0.7) * 30;
+                light3.position.x = Math.sin(time * 0.7) * 30;
+                light3.position.y = Math.cos(time * 0.3) * 40;
+                light3.position.z = Math.sin(time * 0.5) * 30;
+            })
+            light.castShadow = false; // default false
+            spotLight.castShadow = true;
+            const lightHelper = new THREE.SpotLightHelper(spotLight);
+            const shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+            const pointLightHelper = new THREE.PointLightHelper(light, 1);
+            helpers.push(pointLightHelper, lightHelper, shadowCameraHelper);
+        }
+        //---------------------------------------------------//
+        /*-----------------ShadowMapViewer-------------------*/
+        //---------------------------------------------------//
+        //---------------------------------------------------//
+        /*--------------------Materials----------------------*/
+        //---------------------------------------------------//
+        // load the texture
+
+        var bushImg = new THREE.TextureLoader().load('../assets/textures/grass/grass01.png');
+        bushImg.mapping = THREE.UVMapping;
+        bushImg.magFilter = bushImg.minFilter = THREE.NearestFilter;
+        // build the material
+        var bushMat = new THREE.MeshPhongMaterial({
+            map: bushImg,
+            color: 'grey',
+            emissive: 0x013220,
+            alphaTest: 0.7,
+            side: THREE.DoubleSide
+        })
+
+        //---------------------------------------------------//
+        /*--------------------Geometry-----------------------*/
+        //---------------------------------------------------//
+
+
+        function initText() {
+            THREEx.Text = function (text, options) {
+                options = options || {
+                    font: "droid serif",
+                    weight: "bold",
+                    size: 1,
+                    height: 0.4,
+                }
+
+                // create the tGeometry
+                var geometry = new THREE.TextGeometry(text, options)
+
+                // center the geometry
+                // - THREE.TextGeometry isnt centered for unknown reasons. all other geometries are centered
+                geometry.computeBoundingBox();
+                var center = new THREE.Vector3();
+                center.x = (geometry.boundingBox.max.x - geometry.boundingBox.min.x) / 2
+                // center.y	= (geometry.boundingBox.max.y - geometry.boundingBox.min.y) / 2
+                center.z = (geometry.boundingBox.max.z - geometry.boundingBox.min.z) / 2
+                geometry.vertices.forEach(function (vertex) {
+                    vertex.sub(center)
+                })
+
+                // create a mesh with it
+                var material = new THREE.MeshNormalMaterial()
+                var mesh = new THREE.Mesh(geometry, material)
+                // return mesh
+                return mesh
+            }
+        }
+
+        /** Custom functions **/
+
+        function addBlock(mass, vDim, physMat, meshMat, vPos, upright) {
+
+            var m = mass || 200;
+            var s = vDim instanceof THREE.Vector3 ? vDim : new THREE.Vector3(50, 50, 50);
+            var pM = physMat || physicsMaterial;
+            var mM = meshMat || blockMaterial;
+
+            var p;
+            if (vPos instanceof THREE.Vector3) {
+                p = vPos;
+            } else {
+                // random drop (on 8x8 grid).
+                var rX = Math.floor(Math.random() * 8 - 4) * 100 + (vDim.x + (50 - vDim.x));
+                var rZ = Math.floor(Math.random() * 8 - 4) * 100 + (vDim.z + (50 - vDim.z));
+                p = new THREE.Vector3(rX, 1000, rZ);
+            }
+
+            var u = typeof upright !== 'undefined' ? true : false;
+
+            var hE = new CANNON.Vec3(s.x, s.y, s.z);
+            var blockShape = new CANNON.Box(hE);
+            var blockGeometry = new THREE.BoxGeometry(hE.x * 2, hE.y * 2, hE.z * 2);
+            var blockBody = new CANNON.Body({mass: m, shape: blockShape, pM});
+
+            if (!u) {
+                // add a random quaternion rotation.
+                var v1 = new CANNON.Vec3(1, 1, 1);
+                var q1 = new CANNON.Quaternion();
+                q1.setFromAxisAngle(v1, Math.PI * Math.random());
+                blockBody.quaternion.set(q1.x, q1.y, q1.z, q1.w);
+            }
+
+            var blockMesh = new THREE.Mesh(blockGeometry, mM);
+            world.addBody(blockBody);
+            scene.add(blockMesh);
+            blockBody.position.set(p.x, p.y, p.z);
+            blockMesh.position.set(p.x, p.y, p.z);
+            blockMesh.castShadow = true;
+            blockMesh.receiveShadow = true;
+            blockMesh.useQuaternion = true;
+            blocks.push(blockBody);
+            blockMeshes.push(blockMesh);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "": [
+            { "model": "block/stone_andesite_smooth" },
+			{ "model": "block/stone_andesite_smooth_random_a" },
+			{ "model": "block/stone_andesite_smooth_random_b" },
+			{ "model": "block/stone_andesite_smooth_random_c" },
+			{ "model": "block/stone_andesite_smooth_random_d" },
+			{ "model": "block/stone_andesite_smooth_random_e" }
+        ]
+    }
+}

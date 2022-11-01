@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../assets/js/three.module.js",
+                "addons/": "../assets/jsm/",
+                "vendor/": "../assets/vendor/",
+                "parts/": "../Components/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import * as dat from 'vendor/gui/dat.gui.module.js';
+        import {
+            OrbitControls
+        } from "addons/controls/OrbitControls.js";
+
+
+        let camera, controls, scene, renderer, bulbLight, bulbMat, hemiLight, stats;
+        let ballMat, cubeMat, floorMat;
+        let previousShadowMap = false;
+        var camera2, controls2;
+        var waypoint = false;
+
+        var toggleWaypoint = function () {
+
+            console.log(waypoint);
+
+            var el = document.getElementById("state");
+
+            if (waypoint) {
+
+                el.innerText = "Nav: Orbit Controls";
+
+                controls.enablePan = true;
+                controls.target = controls.target0; //or some appropriate target
+
+                document.removeEventListener('wheel', onDocumentMouseWheel);
+
+            } else {
+
+                el.innerText = "Nav: Waypoint";
+
+                var tmpObj = new THREE.Object3D();
+                tmpObj.position.copy(controls.object.position);
+                tmpObj.translateOnAxis(controls.object.getWorldDirection(), 0.1);
+
+                controls.target.copy(tmpObj.position);
+                controls.enablePan = false;
+
+                controls.update();
+
+                document.addEventListener('wheel', onDocumentMouseWheel, false);
+
+
+
+            }
+
+            console.log("toggled");
+
+            waypoint = !waypoint;
+        };
+
+
+//Clicking on Object
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+const projector = new THREE.Projector();
+function onPointerMove(event) {
+
+    // calculate pointer position in normalized device coordinates
+    // (-1 to +1) for both components
+
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+}
+function ClickObj() {
+    renderer.domElement.addEventListener('mousedown', function (event) {
+        var vector = new THREE.Vector3(
+            renderer.devicePixelRatio * (event.pageX - this.offsetLeft) /
+            this.width * 2 - 1,
+            -renderer.devicePixelRatio * (event.pageY - this.offsetTop) /
+            this.height * 2 + 1,
+            0
+        );
+        projector.unprojectVector(vector, camera);
+        var raycaster = new THREE.Raycaster(
+            camera.position,
+            vector.sub(camera.position).normalize()
+        );
+        var intersects = raycaster.intersectObjects(OBJECTS);
+        if (intersects.length) {
+            // intersects[0] describes the clicked object
+        }
+    }, false);
+}
+
+
+
+        // ref for lumens: http://www.power-sure.com/lumens.htm
+        const bulbLuminousPowers = {
+            "110000 lm (1000W)": 110000,
+            "3500 lm (300W)": 3500,
+            "1700 lm (100W)": 1700,
+            "800 lm (60W)": 800,
+            "400 lm (40W)": 400,
+            "180 lm (25W)": 180,
+            "20 lm (4W)": 20,
+            "Off": 0
+        };
+
+        // ref for solar irradiances: https://en.wikipedia.org/wiki/Lux
+        const hemiLuminousIrradiances = {
+            "0.0001 lx (Moonless Night)": 0.0001,
+            "0.002 lx (Night Airglow)": 0.002,
+            "0.5 lx (Full Moon)": 0.5,
+            "3.4 lx (City Twilight)": 3.4,
+            "50 lx (Living Room)": 50,
+            "100 lx (Very Overcast)": 100,
+            "350 lx (Office Room)": 350,
+            "400 lx (Sunrise/Sunset)": 400,
+            "1000 lx (Overcast)": 1000,
+            "18000 lx (Daylight)": 18000,
+            "50000 lx (Direct Sun)": 50000
+        };
+
+        const params = {
+            shadows: true,
+            exposure: 0.68,
+            bulbPower: Object.keys(bulbLuminousPowers)[4],
+            hemiIrradiance: Object.keys(hemiLuminousIrradiances)[2]
+        };
+
+
+        function init() {
+            // create a scene, that will hold all our elements such as objects, cameras and lights.
+            let scene = new THREE.Scene();
+            let fog = new THREE.Fog(0x65a7dd, 0.002)
+            // create a camera, which defines where we're looking at
+            let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            // tell the camera where to look
+            camera.position.set(0, 0, 10);
+            const sizes = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }
+            let renderer = new THREE.WebGLRenderer();
+            renderer.setSize(sizes.width, sizes.height);
+
+            let Light = new THREE.PointLight(0x88ffcc, 5);
+            scene.add(Light)
+            // add the output of the render function to the HTML
+            document.body.appendChild(renderer.domElement);
+
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.maxPolarAngle = 0.9 * Math.PI / 2;
+            controls.enableZoom = true;
+
+            /*const camcontrols = new TrackballControls(camera, renderer.domElement);
+            camcontrols.enabled = true;
+            camcontrols.rotateSpeed = 1.0;
+            camcontrols.zoomSpeed = 1.2;
+            camcontrols.panSpeed = 0.8;
+
+            camcontrols.keys = ['KeyA', 'KeyS', 'KeyD'];
+
+            const keyStates = {};
+
+            const vector1 = new THREE.Vector3();
+            const vector2 = new THREE.Vector3();
+            const vector3 = new THREE.Vector3();
+
+
+            container.addEventListener('mousedown', () => {
+
+                document.body.requestPointerLock();
+
+                mouseTime = performance.now();
+
+            });
+
+            document.addEventListener('mouseup', () => {
+
+                if (document.pointerLockElement !== null) throwBall();
+
+            });
+
+            document.body.addEventListener('mousemove', (event) => {
+
+                if (document.pointerLockElement === document.body) {
+
+                    camera.rotation.y -= event.movementX / 500;
+                    camera.rotation.x -= event.movementY / 500;
+
+                }
+
+            });
+
+
+
+                        let imgLoader = new THREE.ImageLoader();
+                        const resource = imgLoader.load("resource_url",
+                            // onLoad callback
+                            function onLoad(resource) {
+                                // do something with resource
+                                // scene.add(resource);
+                            },
+                            // (optional) onProgress callback
+                            // function onProgress() {
+                            // do something
+                            // },
+                            // onError callback
+                            function onError(err) {
+                                console.log('An error happened');
+                            }
+                        );*/
+
+            const bulbGeometry = new THREE.SphereGeometry(0.02, 16, 8);
+            bulbLight = new THREE.PointLight(0xffee88, 1, 100, 2);
+
+            bulbMat = new THREE.MeshStandardMaterial({
+                emissive: 0xffffee,
+                emissiveIntensity: 1,
+                color: 0x000000
+            });
+            bulbLight.add(new THREE.Mesh(bulbGeometry, bulbMat));
+            bulbLight.position.set(0, 0, 0);
+            bulbLight.castShadow = true;
+            scene.add(bulbLight);
+
+            hemiLight = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 0.32);
+            hemiLight.position.y = 0;
+            scene.add(hemiLight);
+            const helper = new THREE.HemisphereLightHelper(hemiLight, 1);
+            scene.add(helper);
+            floorMat = new THREE.MeshStandardMaterial({
+                roughness: 0.8,
+                color: 0xffffff,
+                metalness: 0.2,
+                bumpScale: 0.0005
+            });
+            const textureLoader = new THREE.TextureLoader();
+            var woodDif = textureLoader.load("../assets/textures/hardwood2_diffuse.jpg", function (map) {
+
+                map.wrapS = THREE.RepeatWrapping;
+                map.wrapT = THREE.RepeatWrapping;
+                map.anisotropy = 4;
+                map.repeat.set(10, 24);
+                map.encoding = THREE.sRGBEncoding;
+                floorMat.map = map;
+                floorMat.needsUpdate = true;
+
+            });
+            var woodBump = textureLoader.load("../assets/textures/hardwood2_bump.jpg", function (map) {
+
+                map.wrapS = THREE.RepeatWrapping;
+                map.wrapT = THREE.RepeatWrapping;
+                map.anisotropy = 4;
+                map.repeat.set(10, 24);
+                floorMat.bumpMap = map;
+                floorMat.needsUpdate = true;
+
+            });
+            var woodRough = textureLoader.load("../assets/textures/hardwood2_roughness.jpg", function (map) {
+
+                map.wrapS = THREE.RepeatWrapping;
+                map.wrapT = THREE.RepeatWrapping;
+                map.anisotropy = 4;
+                map.repeat.set(10, 24);
+                floorMat.roughnessMap = map;
+                floorMat.needsUpdate = true;
+
+            });
+            let WoodMaterial = new THREE.MeshStandardMaterial({
+                map: woodDif,
+                bumpMap: woodBump,
+                roughnessMap: woodRough
+            });
+            let Wood = new THREE.Mesh(
+                new THREE.BoxGeometry,
+                WoodMaterial
+            )
+            scene.add(Wood)
+            cubeMat = new THREE.MeshStandardMaterial({
+                roughness: 0.7,
+                color: 0xffffff,
+                bumpScale: 0.002,
+                metalness: 0.2
+            });
+            let CubeMesh = new THREE.Mesh(
+                new THREE.BoxGeometry,
+                cubeMat
+            )
+            scene.add(CubeMesh)
+            CubeMesh.position.set(0.6, 1, 2)
+            textureLoader.load("../assets/textures/brick_diffuse.jpg", function (map) {
+
+                map.wrapS = THREE.RepeatWrapping;
+                map.wrapT = THREE.RepeatWrapping;
+                map.anisotropy = 4;
+                map.repeat.set(1, 1);
+                map.encoding = THREE.sRGBEncoding;
+                cubeMat.map = map;
+                cubeMat.needsUpdate = true;
+
+            });
+            textureLoader.load("../assets/textures/brick_bump.jpg", function (map) {
+
+                map.wrapS = THREE.RepeatWrapping;
+                map.wrapT = THREE.RepeatWrapping;
+                map.anisotropy = 4;
+                map.repeat.set(1, 1);
+                cubeMat.bumpMap = map;
+                cubeMat.needsUpdate = true;
+
+            });
+
+            ballMat = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                roughness: 0.5,
+                metalness: 1.0
+            });
+            var EarthDif = textureLoader.load("../assets/textures/planets/earth_atmos_2048.jpg", function (map) {
+
+                map.anisotropy = 4;
+                map.encoding = THREE.sRGBEncoding;
+                ballMat.map = map;
+                ballMat.needsUpdate = true;
+
+            });
+            var EarthSpec = textureLoader.load("../assets/textures/planets/earth_specular_2048.jpg", function (map) {
+
+                map.anisotropy = 4;
+                map.encoding = THREE.sRGBEncoding;
+                ballMat.metalnessMap = map;
+                ballMat.needsUpdate = true;
+
+            });
+            let EarthGeometry = new THREE.SphereBufferGeometry();
+            let EarthMaterial = new THREE.MeshPhongMaterial({
+                map: EarthDif,
+                specularMap: EarthSpec,
+                shininess: 20,
+                refractionRatio: 0.78,
+                reflectivity: 0.16
+            });
+            let Earth = new THREE.Mesh(
+                EarthGeometry,
+                EarthMaterial,
+
+            )
+            scene.add(Earth)
+
+
+
+            bulbLight.power = bulbLuminousPowers[params.bulbPower];
+            bulbMat.emissiveIntensity = bulbLight.intensity / Math.pow(0.02, 2.0);
+            // convert from intensity to irradiance at bulb surface
+            hemiLight.intensity = hemiLuminousIrradiances[params.hemiIrradiance];
+
+            // create the GUI
+            var gui = new dat.GUI();
+            // gui.add(controls, 'scaleX', 0, 5);
+
+            // var clock = new THREE.Clock();
+
+            // function for re-rendering/animating the scene
+            function tick() {
+                requestAnimationFrame(tick);
+                const time = Date.now() * 0.0005;
+                bulbLight.position.z = Math.sin(time) * 3.75 + 1.25;
+                bulbLight.position.y = Math.cos(time) * 3.75 + 1.25;
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            tick();
+        }
+        init();
+    </script>
+</body>
+
+</html>

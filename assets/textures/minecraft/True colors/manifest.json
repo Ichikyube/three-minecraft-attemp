@@ -1,0 +1,18 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "minecraft's true colors shine!",
+        "name": "True Colors",
+        "uuid": "bbcb126e-484f-46a1-a438-895343cf0f30",
+        "version": [0, 0, 1],
+        "min_engine_version": [ 1, 13, 0 ]
+    },
+    "modules": [
+        {
+            "description": "Minecraft's true colors shine!",
+            "type": "resources",
+            "uuid": "3469834f-9b0e-4a18-891f-79786049e564",
+            "version": [0, 0, 1]
+        }
+    ]
+}

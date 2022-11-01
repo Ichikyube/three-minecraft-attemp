@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/hellbark_planks" },
+		{ "model": "biomesoplenty:block/hellbark_planks_1" },
+		{ "model": "biomesoplenty:block/hellbark_planks_2" },
+		{ "model": "biomesoplenty:block/hellbark_planks_3" }
+		]
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "§7§l8-bitCraft 2§r§k (u64) \n§r§7For 1.17§r",
+        "name": "§6§l8-bitCraft 2§r§7",
+        "uuid": "463bf935-94d9-4c9d-81a0-1485e95b786d",
+        "version": [
+            1,
+            0,
+            0
+        ],
+        "min_engine_version": [
+            1,
+            16,
+            2
+        ]
+    },
+    "modules": [
+        {
+            "description": "Hello There!",
+            "type": "resources",
+            "uuid": "56ef251b-534f-412f-86a3-8d17290a7061",
+            "version": [
+                1,
+                0,
+                0
+            ]
+        }
+    ]
+}

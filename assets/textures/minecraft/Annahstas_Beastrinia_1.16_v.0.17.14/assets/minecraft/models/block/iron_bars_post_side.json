@@ -1,0 +1,35 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"textures": {
+		"particle": "block/iron_bar",
+		"texture": "block/iron_bar_post"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Box1",
+			"from": [ 7.5312, 2, 7.5312 ],
+			"to": [ 8.4687, 14.59375, 8.4687 ],
+			"faces": {
+				"down": { "uv": [ 7.53125, 7.53125, 8.46875, 8.46875 ], "texture": "#texture" },
+				"up": { "uv": [ 7.53125, 7.53125, 8.46875, 8.46875 ], "texture": "#texture" },
+				"north": { "uv": [ 7.53125, 1.40625, 8.46875, 14 ], "texture": "#texture" },
+				"south": { "uv": [ 7.53125, 1.40625, 8.46875, 14 ], "texture": "#texture" },
+				"west": { "uv": [ 7.53125, 1.40625, 8.46875, 14 ], "texture": "#texture" },
+				"east": { "uv": [ 7.53125, 1.40625, 8.46875, 14 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Box2",
+			"from": [ 7.25, 14.5938, 7.25 ],
+			"to": [ 8.75, 14.87505, 8.75 ],
+			"faces": {
+				"down": { "uv": [ 7.25, 7.25, 8.75, 8.75 ], "texture": "#texture" },
+				"up": { "uv": [ 7.25, 7.25, 8.75, 8.75 ], "texture": "#texture" },
+				"north": { "uv": [ 7.25, 1.125, 8.75, 1.40625 ], "texture": "#texture" },
+				"south": { "uv": [ 7.25, 1.125, 8.75, 1.40625 ], "texture": "#texture" },
+				"west": { "uv": [ 7.25, 1.125, 8.75, 1.40625 ], "texture": "#texture" },
+				"east": { "uv": [ 7.25, 1.125, 8.75, 1.40625 ], "texture": "#texture" }
+			}
+		}
+	]
+}

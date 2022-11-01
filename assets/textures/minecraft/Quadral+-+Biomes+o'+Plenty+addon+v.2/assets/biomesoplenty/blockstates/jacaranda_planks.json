@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/jacaranda_planks" },
+		{ "model": "biomesoplenty:block/jacaranda_planks_1" },
+		{ "model": "biomesoplenty:block/jacaranda_planks_2" },
+		{ "model": "biomesoplenty:block/jacaranda_planks_3" }
+		]
+    }
+}

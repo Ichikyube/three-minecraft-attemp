@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/ethereal_planks" },
+		{ "model": "biomesoplenty:block/ethereal_planks_1" },
+		{ "model": "biomesoplenty:block/ethereal_planks_2" },
+		{ "model": "biomesoplenty:block/ethereal_planks_3" }
+		]
+    }
+}

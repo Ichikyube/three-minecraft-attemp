@@ -1,0 +1,328 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.bow.first_person": {
+			"states": {
+				"default": {
+					"transitions": [{
+						"wield": "c.is_first_person"
+					}]
+				},
+				"wield": {
+					"animations": [
+						"wield"
+					],
+					"transitions": [{
+						"default": "!c.is_first_person"
+					}]
+				}
+			}
+		},
+		"controller.animation.bow.tricks": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_tricks": "query.is_sneaking"
+					}]
+				},
+				"wield_first_person_tricks": {
+					"animations": [
+						"wield_first_person_tricks"
+					],
+					"transitions": [{
+						"default": "!query.is_sneaking"
+					}]
+				}
+			}
+		},
+		"controller.animation.harmonica_play": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"harmonica_play": "query.is_using_item && c.is_first_person"
+					}]
+				},
+				"harmonica_play": {
+					"animations": [
+						"harmonica_play"
+					],
+					"transitions": [{
+						"default": "!query.is_using_item && c.is_first_person"
+					}]
+				}
+			}
+		},
+		"controller.animation.bow.third_person": {
+			"states": {
+				"default": {
+					"transitions": [{
+						"thirdperson_main_hand": "!c.is_first_person"
+					}]
+				},
+				"wield_third_person": {
+					"animations": [
+						"thirdperson_main_hand"
+					],
+					"transitions": [{
+						"default": "c.is_first_person"
+					}]
+				}
+			}
+		},
+		"controller.animation.bow.sprint": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_sprint": "query.is_sprinting && c.is_first_person"
+					}]
+				},
+				"wield_first_person_sprint": {
+					"animations": [
+						"wield_first_person_sprint"
+					],
+					"transitions": [{
+						"default": "!query.is_sprinting && c.is_first_person"
+					}]
+				}
+			}
+		},
+		"controller.animation.crossbow_sprint": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_crossbow.sprint": "query.is_sprinting && c.is_first_person"
+					}]
+				},
+				"wield_first_person_crossbow.sprint": {
+					"animations": [
+						"wield_first_person_crossbow.sprint"
+					],
+					"transitions": [{
+						"default": "!query.is_sprinting && c.is_first_person"
+					}]
+				}
+			}
+		},
+		"controller.animation.bow.not.sprint": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_not_sprint": "!query.is_sprinting && c.is_first_person"
+					}]
+				},
+				"wield_first_person_not_sprint": {
+					"animations": [
+						"wield_first_person_not_sprint"
+					],
+					"transitions": [{
+						"default": "query.is_sprinting && c.is_first_person"
+					}]
+				}
+			}
+		},
+		"controller.animation.crossbow_not_sptint": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_crossbow.not.sprint": "!query.is_sprinting && c.is_first_person"
+					}]
+				},
+				"wield_first_person_crossbow.not.sprint": {
+					"animations": [
+						"wield_first_person_crossbow.not.sprint"
+					],
+					"transitions": [{
+						"default": "query.is_sprinting && c.is_first_person"
+					}]
+				}
+			}
+		},
+		"controller.animation.bow.use": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_use": "!query.main_hand_item_use_duration > 0.0f && query.is_using_item"
+					}]
+				},
+				"wield_first_person_use": {
+					"animations": [
+						"wield_first_person_use"
+					],
+					"transitions": [{
+						"default": "query.main_hand_item_use_duration > 0.0f && !query.is_using_item"
+					}]
+				}
+			}
+		},
+		"controller.animation.bow_pull": {
+			"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_pull": "query.main_hand_item_use_duration > 0.0f"
+					}]
+				},
+				"wield_first_person_pull": {
+					"animations": [
+						"wield_first_person_pull"
+					],
+					"transitions": [{
+						"default": "!query.main_hand_item_use_duration > 0.0f"
+					}]
+				}
+			}
+		},
+		"controller.animation.got_hit": {
+			"states": {
+				"default": {
+					"transitions": [{
+						"got_hit": "variable.health = query.health && query.is_alive"
+					}]
+				},
+				"got_hit": {
+					"animations": [
+						"got_hit"
+					],
+					"transitions": [{
+						"got_hit": "query.health != variable.health && query.is_alive"
+					}]
+				}
+			}
+		},
+		"controller.animation.arrow": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"smoke": "!query.is_on_ground"
+					}]
+				},
+				"smoke": {
+					"animations": [
+						"smoke"
+					],
+					"transitions": [{
+						"default": "query.all_animations_finished && query.is_on_ground"
+					}]
+				}
+			}
+		},
+		"controller.animation.crossbow_shoot": {
+		"states": {
+				"default": {
+					"transitions": [{
+					"wield_first_person_crossbow_shoot": "!query.item_is_charged"
+					}]
+				},
+				"wield_first_person_crossbow_shoot": {
+					"animations": [
+						"wield_first_person_crossbow_shoot"
+					],
+					"transitions": [{
+						"default":  "query.item_is_charged && !query.is_using_item"
+					}]
+				}
+			}
+		},
+		"controller.animation.crossbow_charging":  {
+		"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_charging": "query.main_hand_item_use_duration > 0.0f && !query.item_is_charged"
+					}]
+				},
+				"wield_first_person_charging": {
+					"animations": [
+						"wield_first_person_charging"
+					],
+					"transitions": [{
+						"default": "!query.main_hand_item_use_duration > 0.0f"
+					}]
+				}
+			}
+		},
+		"controller.animation.crossbow_charged": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"wield_first_person_charged": "query.item_is_charged"
+					}]
+				},
+				"wield_first_person_charged": {
+					"animations": [
+						"wield_first_person_charged"
+					],
+					"transitions": [{
+						"default":  "!query.item_is_charged"
+					}]
+				}
+			}
+		},
+		"controller.animation.whisky.drink": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"whisky": "query.main_hand_item_use_duration > 0.0f"
+					}]
+				},
+				"whisky": {
+					"animations": [
+						"whisky"
+					],
+					"transitions": [{
+						"default": "!query.main_hand_item_use_duration > 0.0f"
+					}]
+				}
+			}
+		},
+		"controller.animation.windmill_spin": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"windmill_spin": "query.get_name == 'windmill'"
+					}]
+				},
+				"windmill_spin": {
+					"animations": [
+						"windmill_spin"
+					],
+					"transitions": [{
+						"default": "!query.get_name == 'windmill'"
+					}]
+				}
+			}
+		},
+		"controller.animation.waterwheel_use": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"waterwheel_use": "query.get_name == 'waterwheel'"
+					}]
+				},
+				"waterwheel_use": {
+					"animations": [
+						"waterwheel_use"
+					],
+					"transitions": [{
+						"default": "!query.get_name == 'waterwheel'"
+					}]
+				}
+			}
+		},
+		"controller.animation.cigar.smoke": {
+		"states": {
+				"default": {
+					"transitions": [{
+						"cigar": "query.main_hand_item_use_duration > 0.0f"
+					}]
+				},
+				"cigar": {
+					"animations": [
+						"cigar"
+					],
+					"transitions": [{
+						"default": "!query.main_hand_item_use_duration > 0.0f"
+					}]
+				}
+			}
+		}
+	}
+}

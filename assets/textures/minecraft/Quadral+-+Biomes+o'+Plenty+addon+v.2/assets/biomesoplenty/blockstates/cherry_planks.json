@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/cherry_planks" },
+		{ "model": "biomesoplenty:block/cherry_planks_1" },
+		{ "model": "biomesoplenty:block/cherry_planks_2" },
+		{ "model": "biomesoplenty:block/cherry_planks_3" }
+		]
+    }
+}

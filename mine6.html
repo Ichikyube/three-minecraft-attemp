@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./assets/js/three.module.js",
+                "vendor/": "./assets/vendor/",
+                "addons/": "./assets/jsm/",
+                "parts/": "./Components/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import {
+            OrbitControls
+        } from 'addons/controls/OrbitControls.js';
+
+        function init() {
+            // create a scene, that will hold all our elements such as objects, cameras and lights.
+            let scene = new THREE.Scene();
+            // create a camera, which defines where we're looking at
+            let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+            // tell the camera where to look
+            camera.position.set(10, 10, 10);
+            // create a render and set the size
+            const sizes = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }
+            let renderer = new THREE.WebGLRenderer();
+            renderer.setSize(sizes.width, sizes.height);
+            // add the output of the render function to the HTML
+            document.body.appendChild(renderer.domElement);
+            let controls = new OrbitControls(camera, renderer.domElement);
+
+            controls.update();
+            const keys = {
+                'KeyA': [-1, 0, 0],
+                'KeyD': [1, 0, 0],
+                'KeyW': [0, 0, -1],
+                'KeyS': [0, 0, 1]
+
+            }
+            window.addEventListener('keypress', function (event) {
+                onKeyPress(event)
+            });
+
+            var clock = new THREE.Clock();
+
+            function onKeyPress(e) {
+                let player = scene.getObjectByName('PLAYER');
+                let direction = new THREE.Vector3().fromArray(keys[e.code] ?? [0, 0, 0]);
+                player.translateOnAxis(direction, 3 * clock.getDelta())
+                columnPos = player.position.x > tileSize? 3 :  player.position.x < 0? 1 : 2;
+                rowPos = player.position.z > tileSize? 3 :  player.position.z < 0? 1 : 2;
+
+
+                if (player.position.x > tileSize) {
+                    columnPos = 3;
+                }
+                if (player.position.x < tileSize - tileSize) {
+                    columnPos = 1;
+                }
+                if (player.position.x < tileSize && player.position.x > tileSize - tileSize) {
+                    columnPos = 2
+                }
+                if (player.position.z > tileSize) {
+                    rowPos = 3;
+                }
+
+                if (player.position.z < tileSize - tileSize) {
+                    rowPos = 1
+                }
+                if (player.position.z < tileSize && player.position.z > tileSize - tileSize) {
+                    rowPos = 2
+                }
+            }
+            let playerMat = new THREE.MeshBasicMaterial({
+                color: 'green'
+            })
+
+            let material = new THREE.MeshNormalMaterial
+
+            let materialMesh = new THREE.Mesh(
+                new THREE.BoxGeometry,
+                playerMat
+            )
+            materialMesh.name = 'PLAYER';
+            scene.add(materialMesh)
+            camera.lookAt(materialMesh.position);
+            let tileSize = 5;
+
+            const floor = [];
+            let index = 0;
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    floor[index] = new THREE.Mesh(new THREE.BoxGeometry(tileSize, 1, tileSize), material)
+                    floor[index].position.y = -1
+                    floor[index].position.x = i * tileSize - tileSize;
+                    floor[index].position.z = j * tileSize - tileSize;
+                    floor[index].name = String(index + 1)
+                    index++;
+                }
+            }
+            const edges = new THREE.EdgesGeometry( floor[4].geometry );
+            const line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
+            scene.add( line );
+            console.log(floor)
+            floor.forEach(floor => {
+                scene.add(floor)
+            })
+            let columnPos = 2,
+                rowPos = 2;
+            let lastColumn = columnPos,
+                lastRow = rowPos;
+
+            
+
+            // function for re-rendering/animating the scene
+            function update() {
+                let delta = clock.getDelta();
+                if (columnPos != lastColumn || rowPos != lastRow) console.log(columnPos + ', ' + rowPos);
+                lastColumn = columnPos, lastRow = rowPos;
+
+            }
+
+            function tick() {
+                update()
+                requestAnimationFrame(tick);
+                renderer.render(scene, camera);
+            }
+            tick();
+        }
+        init();
+    </script>
+</body>
+
+</html>

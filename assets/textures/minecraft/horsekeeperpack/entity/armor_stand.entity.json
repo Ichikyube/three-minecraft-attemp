@@ -1,0 +1,83 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:armor_stand",
+      "min_engine_version": "1.8.0",
+      "materials": {
+        "default": "armor_stand"
+      },
+      "textures": {
+        "default": "textures/entity/armor_stand",
+        "piano": "textures/entity/piano",
+        "waterwheel": "textures/entity/waterwheel",
+        "windmill": "textures/entity/windmill",
+        "scarecrow": "textures/entity/scarecrow"
+      },
+      "sound_effects": {
+                "piano.cchord": "piano.cchord",
+                "piano.dchord": "piano.dchord",
+                "piano.echord": "piano.echord",
+                "piano.fchord": "piano.fchord",
+                "piano.gchord": "piano.gchord",
+                "piano.achord": "piano.achord",
+                "piano.bchord": "piano.bchord"
+            },
+            "particle_effects": {
+                "waterwheel_water": "minecraft:waterwheel_water"
+            },
+      "animations": {
+        "default_pose": "animation.armor_stand.default_pose",
+        "piano_cchord": "animation.piano_cchord",
+        "piano_dchord": "animation.piano_dchord",
+        "piano_echord": "animation.piano_echord",
+        "piano_fchord": "animation.piano_fchord",
+        "piano_gchord": "animation.piano_gchord",
+        "piano_achord": "animation.piano_achord",
+        "piano_bchord": "animation.piano_bchord",
+        "piano_chord.controller": "controller.animation.piano_chord",
+        "waterwheel_use": "animation.waterwheel_use",
+        "waterwheel_use.controller": "controller.animation.waterwheel_use",
+        "windmill_spin": "animation.windmill_spin",
+        "windmill_spin.controller": "controller.animation.windmill_spin",
+        "no_pose": "animation.armor_stand.no_pose",
+        "solemn_pose": "animation.armor_stand.solemn_pose",
+        "athena_pose": "animation.armor_stand.athena_pose",
+        "brandish_pose": "animation.armor_stand.brandish_pose",
+        "honor_pose": "animation.armor_stand.honor_pose",
+        "entertain_pose": "animation.armor_stand.entertain_pose",
+        "salute_pose": "animation.armor_stand.salute_pose",
+        "riposte_pose": "animation.armor_stand.riposte_pose",
+        "zombie_pose": "animation.armor_stand.zombie_pose",
+        "cancan_a_pose": "animation.armor_stand.cancan_a_pose",
+        "cancan_b_pose": "animation.armor_stand.cancan_b_pose",
+        "hero_pose": "animation.armor_stand.hero_pose",
+        "wiggle": "animation.armor_stand.wiggle",
+        "controller.pose": "controller.animation.armor_stand.pose",
+        "controller.wiggling": "controller.animation.armor_stand.wiggle"
+      },
+      "scripts": {
+        "initialize": [
+          "variable.armor_stand.pose_index = 0;",
+          "variable.armor_stand.hurt_time = 0;"
+        ],
+        "animate": [
+          "controller.pose",
+          "piano_chord.controller",
+          "waterwheel_use.controller",
+          "windmill_spin.controller",
+          "controller.wiggling"
+        ]
+      },
+      "geometry": {
+        "default": "geometry.armor_stand",
+        "piano": "geometry.piano_stand",
+        "waterwheel": "geometry.waterwheel",
+        "windmill": "geometry.windmill",
+        "scarecrow": "geometry.scarecrow"
+      },
+      "render_controllers": [ "controller.render.armor_stand" ],
+      "enable_attachables": true
+    }
+  }
+}

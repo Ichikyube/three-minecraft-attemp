@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/stem_growth7",
+	"textures": {
+		"particle": "block/mini_melon_side",
+		"stem": "block/melon_stem_7",
+		"stem2": "block/melon_stem_7_1",
+		"side": "block/mini_melon_side",
+		"bottom": "block/mini_melon_bottom",
+		"top": "block/mini_melon_top"
+	}
+}

@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/mahogany_planks" },
+		{ "model": "biomesoplenty:block/mahogany_planks_1" },
+		{ "model": "biomesoplenty:block/mahogany_planks_2" },
+		{ "model": "biomesoplenty:block/mahogany_planks_3" }
+		]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "parent": "item/handheld",
+	"textures": {
+        "layer0": "item/trident"
+    },
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [-135, 90, 0],
+			"translation": [0, -4, 0]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [135, 90, 0],
+			"translation": [0, -4, 0]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, -90, 65 ],
+            "translation": [6, 8, -4]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 0, 90, -65 ],
+            "translation": [6, 8, -4]
+        }
+    }
+}

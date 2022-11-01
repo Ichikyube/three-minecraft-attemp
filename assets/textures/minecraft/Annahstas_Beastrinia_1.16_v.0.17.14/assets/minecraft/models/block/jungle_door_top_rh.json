@@ -1,0 +1,54 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"textures": {
+		"particle": "block/jungle_door_top",
+		"texture": "block/jungle_door_top"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Cube1",
+			"from": [ 0, 0, 10.5 ],
+			"to": [ 3, 9.5, 16 ],
+			"faces": {
+				"north": { "uv": [ 7, 5.5, 8, 6 ], "texture": "#texture" },
+				"south": { "uv": [ 0, 6.5, 3, 16 ], "texture": "#texture" },
+				"west": { "uv": [ 5.5, 6.5, 0, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 0, 6.5, 5.5, 16 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Cube2",
+			"from": [ 0, 0, 0 ],
+			"to": [ 3, 9.5, 6 ],
+			"faces": {
+				"north": { "uv": [ 0, 6.5, 3, 16 ], "texture": "#texture" },
+				"south": { "uv": [ 7, 5.5, 8, 6.5 ], "texture": "#texture" },
+				"west": { "uv": [ 16, 6.5, 10, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 10, 6.5, 16, 16 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Cube3",
+			"from": [ 0, 9.5, 0 ],
+			"to": [ 3, 16, 16 ],
+			"faces": {
+				"down": { "uv": [ 7, 5.5, 8, 6.5 ], "texture": "#texture" },
+				"up": { "uv": [ 0, 0, 3, 16 ], "texture": "#texture" },
+				"north": { "uv": [ 0, 0, 3, 6.5 ], "texture": "#texture" },
+				"south": { "uv": [ 0, 0, 3, 6.5 ], "texture": "#texture" },
+				"west": { "uv": [ 16, 0, 0, 6.5 ], "texture": "#texture" },
+				"east": { "uv": [ 0, 0, 16, 6.5 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Cube4",
+			"from": [ 0, 0, 6 ],
+			"to": [ 3, 3, 10.5 ],
+			"faces": {
+				"up": { "uv": [ 7, 5.5, 8.5, 6.5 ], "texture": "#texture" },
+				"west": { "uv": [ 10, 13, 5.5, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 5.5, 13, 10, 16 ], "texture": "#texture" }
+			}
+		}
+	]
+}

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #loading {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: xx-large;
+            font-family: sans-serif;
+        }
+
+        #loading>div>div {
+            padding: 2px;
+        }
+
+        .progress {
+            width: 50vw;
+            border: 1px solid black;
+        }
+
+        #progressbar {
+            width: 0;
+            transition: width ease-out .5s;
+            height: 1em;
+            background-color: #888;
+            background-image: linear-gradient(-45deg,
+                    rgba(255, 255, 255, .5) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, .5) 50%,
+                    rgba(255, 255, 255, .5) 75%,
+                    transparent 75%,
+                    transparent);
+            background-size: 50px 50px;
+            animation: progressanim 2s linear infinite;
+        }
+
+        @keyframes progressanim {
+            0% {
+                background-position: 50px 50px;
+            }
+
+            100% {
+                background-position: 0 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="c"></canvas>
+    <div id="loading">
+        <div>
+            <div>...loading...</div>
+            <div class="progress">
+                <div id="progressbar"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import * as THREE from '/build/three.module.js';
+        import {
+            OrbitControls
+        } from '/examples/jsm/controls/OrbitControls.js';
+        import {
+            GLTFLoader
+        } from '/examples/jsm/loaders/GLTFLoader.js';
+        import * as SkeletonUtils from '/examples/jsm/utils/SkeletonUtils.js';
+        const manager = new THREE.LoadingManager();
+        manager.onLoad = init;
+        const progressbarElem = document.querySelector('#progressbar');
+        manager.onProgress = (url, itemsLoaded, itemsTotal) => {
+            progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
+        };
+        const models = {
+            pig: {
+                url: 'resources/models/animals/Pig.gltf'
+            },
+            cow: {
+                url: 'resources/models/animals/Cow.gltf'
+            },
+            llama: {
+                url: 'resources/models/animals/Llama.gltf'
+            },
+            pug: {
+                url: 'resources/models/animals/Pug.gltf'
+            },
+            sheep: {
+                url: 'resources/models/animals/Sheep.gltf'
+            },
+            zebra: {
+                url: 'resources/models/animals/Zebra.gltf'
+            },
+            horse: {
+                url: 'resources/models/animals/Horse.gltf'
+            },
+            knight: {
+                url: 'resources/models/knight/KnightCharacter.gltf'
+            },
+        }; {
+            const gltfLoader = new GLTFLoader(manager);
+            for (const model of Object.values(models)) {
+                gltfLoader.load(model.url, (gltf) => {
+                    model.gltf = gltf;
+                });
+            }
+        }
+
+        function prepModelsAndAnimations() {
+            Object.values(models).forEach(model => {
+                const animsByName = {};
+                model.gltf.animations.forEach((clip) => {
+                    animsByName[clip.name] = clip;
+                });
+                model.animations = animsByName;
+            });
+        }
+        const mixerInfos = []; //const mixers = [];
+
+        function init() {
+            // create a scene, that will hold all our elements such as objects, cameras and lights.
+            let scene = new THREE.Scene();
+            // create a camera, which defines where we're looking at
+            let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+            // tell the camera where to look
+            camera.position.set(0, 0, 10);
+            // create a render and set the size
+            const sizes = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }
+            let renderer = new THREE.WebGLRenderer();
+            renderer.setSize(sizes.width, sizes.height);
+            // add the output of the render function to the HTML
+            document.body.appendChild(renderer.domElement);
+
+            // hide the loading bar
+            const loadingElem = document.querySelector('#loading');
+            loadingElem.style.display = 'none';
+            prepModelsAndAnimations();
+
+            Object.values(models).forEach((model, ndx) => {
+                const clonedScene = SkeletonUtils.clone(model.gltf.scene);
+                const root = new THREE.Object3D();
+                root.add(clonedScene);
+                scene.add(root);
+                root.position.x = (ndx - 3) * 3;
+
+                const mixer = new THREE.AnimationMixer(clonedScene);
+                const actions = Object.values(model.animations).map((
+                    clip) => { //const firstClip = Object.values(model.animations)[0];
+                    return mixer.clipAction(clip); //const action = mixer.clipAction(firstClip);
+                });
+                const mixerInfo = {
+                    mixer,
+                    actions,
+                    actionNdx: -1,
+                };
+                mixerInfos.push(mixerInfo); //mixers.push(mixer);
+                playNextAction(mixerInfo); //action.play();
+            });
+
+
+            let then = 0;
+
+            function update(now) {
+                now *= 0.001; // convert to seconds
+                const deltaTime = now - then;
+                then = now;
+
+                for (const {
+                        mixer
+                    } of mixersInfos) {
+                    mixer.update(deltaTime);
+                }
+            }
+            window.addEventListener('keydown', (e) => {
+                const mixerInfo = mixerInfos[e.keyCode - 49];
+                if (!mixerInfo) {
+                    return;
+                }
+                playNextAction(mixerInfo);
+            });
+            // var clock = new THREE.Clock();
+            // function for re-rendering/animating the scene
+            function tick() {
+                update(now);
+                renderer.render(scene, camera);
+                requestAnimationFrame(tick);
+                tick();
+            }
+        }
+
+        function playNextAction(mixerInfo) {
+            const {
+                actions,
+                actionNdx
+            } = mixerInfo;
+            const nextActionNdx = (actionNdx + 1) % actions.length;
+            mixerInfo.actionNdx = nextActionNdx;
+            actions.forEach((action, ndx) => {
+                const enabled = ndx === nextActionNdx;
+                action.enabled = enabled;
+                if (enabled) {
+                    action.play();
+                }
+            });
+        }
+
+        function generateTexture(data, width, height) {
+
+            // bake lighting into texture
+
+            let context, image, imageData, shade;
+
+            const vector3 = new THREE.Vector3(0, 0, 0);
+
+            const sun = new THREE.Vector3(1, 1, 1);
+            sun.normalize();
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            context = canvas.getContext('2d');
+            context.fillStyle = '#000';
+            context.fillRect(0, 0, width, height);
+
+            image = context.getImageData(0, 0, canvas.width, canvas.height);
+            imageData = image.data;
+
+            for (let i = 0, j = 0, l = imageData.length; i < l; i += 4, j++) {
+
+                vector3.x = data[j - 2] - data[j + 2];
+                vector3.y = 2;
+                vector3.z = data[j - width * 2] - data[j + width * 2];
+                vector3.normalize();
+
+                shade = vector3.dot(sun);
+
+                imageData[i] = (96 + shade * 128) * (0.5 + data[j] * 0.007);
+                imageData[i + 1] = (32 + shade * 96) * (0.5 + data[j] * 0.007);
+                imageData[i + 2] = (shade * 96) * (0.5 + data[j] * 0.007);
+
+            }
+
+            context.putImageData(image, 0, 0);
+
+            // Scaled 4x
+
+            const canvasScaled = document.createElement('canvas');
+            canvasScaled.width = width * 4;
+            canvasScaled.height = height * 4;
+
+            context = canvasScaled.getContext('2d');
+            context.scale(4, 4);
+            context.drawImage(canvas, 0, 0);
+
+            image = context.getImageData(0, 0, canvasScaled.width, canvasScaled.height);
+            imageData = image.data;
+
+            for (let i = 0, l = imageData.length; i < l; i += 4) {
+
+                const v = ~~(Math.random() * 5);
+
+                imageData[i] += v;
+                imageData[i + 1] += v;
+                imageData[i + 2] += v;
+
+            }
+
+            context.putImageData(image, 0, 0);
+
+            return canvasScaled;
+
+        }
+    </script>
+</body>
+
+</html>

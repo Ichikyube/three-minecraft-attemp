@@ -1,0 +1,19 @@
+{
+    "parent": "block/cube",
+    "display": {
+        "firstperson_righthand": {
+            "rotation": [ 0, 135, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.40, 0.40, 0.40 ]
+        }
+    },
+    "textures": {
+        "particle": "block/observer_bottom",
+        "down": "block/observer_front",
+        "up": "block/observer_back",
+        "north": "block/observer_side_vertical",
+        "east": "block/observer_side_vertical",
+        "south": "block/observer_side_vertical",
+        "west": "block/observer_side_vertical"
+    }
+}

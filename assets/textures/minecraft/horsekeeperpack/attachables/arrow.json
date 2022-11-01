@@ -1,0 +1,30 @@
+{
+	"format_version": "1.16.0",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "minecraft:arrow",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/arrows"
+			},
+			"particle_effects": {
+                "arrow.smoke": "minecraft:smokerbullet",
+                 "arrow.sparc": "minecraft:arrow.sparc"
+            },
+			"geometry": {
+				"default": "geometry.arrow"
+			},
+			"animations": {
+			"smokearrow": "animation.smokearrow"
+			},
+			"scripts": {
+				"animate": [
+					"smokearrow"
+				]
+			},
+			"render_controllers": ["controller.render.default"]
+		}
+	}
+}

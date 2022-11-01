@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/redwood_planks" },
+		{ "model": "biomesoplenty:block/redwood_planks_1" },
+		{ "model": "biomesoplenty:block/redwood_planks_2" },
+		{ "model": "biomesoplenty:block/redwood_planks_3" }
+		]
+    }
+}

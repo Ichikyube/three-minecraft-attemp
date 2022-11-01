@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "": [
+            { "model": "block/end_stone", "weight": 30 },
+			{ "model": "block/end_stone_1", "weight": 20 },
+			{ "model": "block/end_stone_2", "weight": 3 },
+			{ "model": "block/end_stone_3", "weight": 10 }
+        ]
+    }
+}

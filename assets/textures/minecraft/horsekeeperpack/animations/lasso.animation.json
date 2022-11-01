@@ -1,0 +1,35 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.lasso_get": {
+			"loop": true,
+			"animation_length": 30,
+			"bones": {
+				"lassohook": {
+					"rotation": {
+						"0.0": {
+							"post": [0, 0, 0],
+							"lerp_mode": "catmullrom"
+						},
+						"0.25": {
+							"post": [180, 0, -17.5],
+							"lerp_mode": "catmullrom"
+						},
+						"0.5": {
+							"post": [362.5, 0, 0],
+							"lerp_mode": "catmullrom"
+						},
+						"0.5417": {
+							"post": [360.12852, 0, 0.01232],
+							"lerp_mode": "catmullrom"
+						},
+						"30.0": {
+							"post": [362.5, 0, 0],
+							"lerp_mode": "catmullrom"
+						}
+					}
+				}
+			}
+		}
+	}
+}

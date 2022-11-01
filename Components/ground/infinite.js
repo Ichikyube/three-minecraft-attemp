@@ -1,0 +1,9 @@
+var chunks = [];
+var xoff = 0;
+var zoff = 0;
+var inc = 0.05;
+var amplitude = 30 + (Math.random() * 70);
+var renderDistance = 4;
+var chunkSize = 10;
+var depth = 5; // keeps track of the depth of the world (in terms of blocks)
+var minWorldY = -250; // the minimum y coordinate of a block

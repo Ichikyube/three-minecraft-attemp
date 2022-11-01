@@ -1,0 +1,22 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.armor_stand": {
+      "geometry": "query.get_name == 'piano' ? geometry.piano :(query.get_name == 'waterwheel' ? geometry.waterwheel :(query.get_name == 'windmill' ? geometry.windmill :(query.get_name == 'scarecrow' ? geometry.scarecrow :(geometry.default))))",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "query.get_name == 'piano' ? Texture.piano :(query.get_name == 'waterwheel' ? Texture.waterwheel :(query.get_name == 'windmill' ? Texture.windmill :(query.get_name == 'scarecrow' ? Texture.scarecrow :(texture.default))))"
+      ],
+      "overlay_color": {
+        "r": "this",
+        "g": "this",
+        "b": "this",
+        "a": "0.0"
+      }
+    }
+  }
+}

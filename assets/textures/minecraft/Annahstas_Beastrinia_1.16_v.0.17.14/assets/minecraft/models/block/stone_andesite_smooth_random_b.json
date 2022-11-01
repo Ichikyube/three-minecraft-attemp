@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+    	"particle": "block/stone_andesite_smooth_random_2",
+        "down": "block/stone_andesite_smooth_random_2",
+        "up": "block/stone_andesite_smooth_random_2",
+        "north": "block/stone_andesite_smooth_random_2",
+        "south": "block/stone_andesite_smooth_random_2",
+        "west": "block/stone_andesite_smooth_random_2",
+        "east": "block/stone_andesite_smooth_random_2"
+    }
+}

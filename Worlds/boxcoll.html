@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="blocker">
+        <div id="instructions">
+            <button id="tour" type="button" hidden>Simulated Tour</button>
+            <p style="font-size:36px">
+                Click to play
+            </p>
+            <p>
+                Move: WASD<br />
+                Jump: SPACE<br />
+                Look: MOUSE
+            </p>
+        </div>
+    </div>
+    <script type="x-shader/x-vertex" id="vertexShader">
+
+        varying vec3 vWorldPosition;
+
+        void main() {
+
+            vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
+            vWorldPosition = worldPosition.xyz;
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+        }
+
+    </script>
+
+    <script type="x-shader/x-fragment" id="fragmentShader">
+
+        uniform vec3 topColor;
+        uniform vec3 bottomColor;
+        uniform float offset;
+        uniform float exponent;
+
+        varying vec3 vWorldPosition;
+
+        void main() {
+
+            float h = normalize( vWorldPosition + offset ).y;
+            gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( max( h, 0.0 ), exponent ), 0.0 ) ), 1.0 );
+
+        }
+
+    </script>
+
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./assets/js/three.module.js"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import Stats from './assets/jsm/libs/stats.module.js';
+        import * as BufferGeometryUtils from './assets/jsm/utils/BufferGeometryUtils.js';
+        //controls
+        import {
+            PointerLockControls
+        } from './assets/jsm/controls/PointerLockControls.js';
+        import {
+            GLTFLoader
+        } from './assets/jsm/loaders/GLTFLoader.js';
+        import {
+            ShadowMapViewer
+        } from './assets/jsm/utils/ShadowMapViewer.js';
+
+        //Post-Processing
+        import {
+            ShaderPass
+        } from './assets/jsm/postprocessing/ShaderPass.js';
+        import {
+            RenderPass
+        } from './assets/jsm/postprocessing/RenderPass.js';
+        import {
+            MaskPass
+        } from './assets/jsm/postprocessing/MaskPass.js';
+        import {
+            AfterimagePass
+        } from './assets/jsm/postprocessing/AfterimagePass.js';
+        import {
+            EffectComposer
+        } from './assets/jsm/postprocessing/EffectComposer.js';
+        //Shader
+        import {
+            FXAAShader
+        } from './assets/jsm/shaders/FXAAShader.js';
+        import {
+            BokehPass
+        } from './assets/jsm/postprocessing/BokehPass.js';
+        import {
+            RGBShiftShader
+        } from './assets/jsm/shaders/RGBShiftShader.js';
+        import {
+            CopyShader
+        } from './assets/jsm/shaders/CopyShader.js';
+
+        function degrees_to_radians(degrees) {
+            var pi = Math.PI;
+            return degrees * (pi / 180);
+        }
+        const clock = new THREE.Clock();
+        const STEPS_PER_FRAME = 5;
+        let xRot = 0;
+        let player, scene, renderer, camera;
+        let playerOnFloor = false;
+
+        const sizes = {
+            width: window.innerWidth,
+            height: window.innerHeight,
+        }
+        const SHADOW_MAP_WIDTH = 2048,
+            SHADOW_MAP_HEIGHT = 1024;
+        const SHADOW_MAP_DLight = 1024;
+        const DsArea = 2054;
+
+        const objects = [];
+
+        function getBoundingBox(position, dimensions) {
+            return {
+                minX: position.x,
+                maxX: position.x + dimensions.width,
+                minY: position.y,
+                maxY: position.y + dimensions.height,
+                minZ: position.z,
+                maxZ: position.z + dimensions.depth
+            };
+        }
+        var bounds = {
+            type: type,
+            xMin: bbox.min.x,
+            xMax: bbox.max.x,
+            yMin: bbox.min.y,
+            yMax: bbox.max.y,
+            zMin: bbox.min.z,
+            zMax: bbox.max.z,
+        };
+        let prevTime = performance.now();
+        const vertex = new THREE.Vector3();
+        const color = new THREE.Color();
+        class Player {
+            constructor(data) {
+                this._height = 14;
+                this.velocity = new THREE.Vector3();
+                this.direction = new THREE.Vector3();
+                this.tmpPosition = new THREE.Vector3();
+                this.prevPositions = [
+                    new THREE.Vector3(),
+                    new THREE.Vector3(),
+                    new THREE.Vector3(),
+                    new THREE.Vector3(),
+                    new THREE.Vector3()
+                ];
+                this.body = new THREE.Mesh(
+                    new THREE.BoxGeometry(9, this._height, 6),
+                    new THREE.MeshBasicMaterial({
+                        color: 0xff0000
+                    })
+                );
+                this.body.position.set(0, 400, 0);
+                this.body.visible = true;
+                this.body.BBoxHelper = new THREE.BoxHelper(this.body, 0xff0000);
+                this.body.BBox = new THREE.Box3();
+                var bounds = this.body.BBox.containsPoint(camera.position);
+                this.controls = new PointerLockControls(camera, renderer.domElement);
+                this.moveCtrl = {
+                    moveForward: false,
+                    moveBackward: false,
+                    moveLeft: false,
+                    moveRight: false,
+                    canJump: false
+                };
+                scene.add(this.controls.getObject(), this.body, this.body.BBoxHelper);
+                objects.push(bounds);
+                //this.raycaster = new THREE.Raycaster(this.controls.getObject().position, this.direction.normalize(), 0, 10);
+                this.raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
+                this.initControls();
+            }
+            update(time) {
+                this.updateMovement(time);
+                this.body.BBox.setFromObject(this.body);
+                this.checkCollision();
+                this.body.BBoxHelper.update();
+            }
+            checkCollision() {
+                let self = this;
+                let boxesCollision = false;
+                objects.some(function (mesh) {
+                    if (self.body.BBox.intersectsBox(mesh.BBox)) {
+                        boxesCollision = true;
+                        return true;
+                    }
+                });
+                if (boxesCollision) {
+                    //this.controls.getObject().position.copy(this.tmpPosition);
+                    if (this.velocity.x != 0 || this.velocity.z != 0) {
+                        this.controls.getObject().position.x = this.tmpPosition.x;
+                        this.controls.getObject().position.z = this.tmpPosition.z; //find moveCtrl true ->false
+                    } else {
+                        this.velocity.y = 0; //
+                        this.controls.getObject().position.y = this.tmpPosition.y; // last position
+                    }
+                }
+
+                let collisionRange = 4; //if the mesh gets too close, the camera clips though the object...
+
+                let tempVelocity = velocity.clone().multiplyScalar(delta) //get the delta velocity
+                let nextPosition = controls.getObject().position.clone().add(tempVelocity);
+                let tooClose = false;
+                let playerPosition = controls.getObject().position;
+
+                for (let i = 0; i < objects.length; i++) {
+                    let object = objects[i];
+                    let objectDirection = object.position.clone().sub(playerPosition).normalize();
+                    raycaster.set(nextPosition, objectDirection) //set the position and direction
+                    let directionIntersects = raycaster.intersectObject(object);
+                    if (directionIntersects.length > 0 && directionIntersects[0].distance < collisionRange) {
+                        //too close, stop player from moving in that direction...
+                        tooClose = true;
+                        break;
+                    } else {
+                        tooClose = false;
+                    }
+                }
+
+                if (tooClose == false) {
+                    controls.moveRight(-velocity.x * speedDelta);
+                    controls.moveForward(-velocity.z * speedDelta);
+
+                    controls.getObject().position.y += (velocity.y * speedDelta); // new behavior
+                } else {
+                    controls.moveRight(velocity.x * speedDelta);
+                    controls.moveForward(velocity.z * speedDelta);
+
+                    controls.getObject().position.y += (velocity.y * speedDelta); // new behavior
+                }
+
+                if (controls.getObject().position.y < 10) {
+                    velocity.y = 0;
+                    controls.getObject().position.y = 10;
+                    canJump = true;
+                }
+
+                if (cubeBox.intersectsBox(propBox)) {
+                    // Intersects with prop; move backwards. Get reverse of travelled direction
+                    const backwards = lastPos.sub(this.cube.position).normalize();
+                    // Get amount intersected
+                    const intersectDepth = propBox.max.y - cubeBox.min.y;
+                    // Move backwards by depth
+                    const moveStep = backwards.multiplyScalar(intersectDepth);
+                    this.cube.position.add(moveStep);
+                    this.dy = 0;
+                }
+
+            }
+
+            updateMovement(time) {
+                this.tmpPosition.copy(this.controls.getObject().position);
+
+                if (this.controls.isLocked === true) {
+                    this.raycaster.ray.origin.copy(this.controls.getObject().position);
+                    this.raycaster.ray.origin.y -= 10;
+                    const intersections = this.raycaster.intersectObjects(objects, false);
+                    const onObject = intersections.length > 0;
+                    console.log(onObject);
+                    const delta = (time - prevTime) / 1000;
+                    const speedDelta = delta * (onObject ? 25 : 8); // gives a bit of air control
+                    this.velocity.x -= this.velocity.x * 40.0 * delta;
+                    this.velocity.z -= this.velocity.z * 40.0 * delta;
+                    let damping = Math.exp(-4 * delta) - 1;
+                    if (onObject === true) {
+                        this.velocity.y = Math.max(0, this.velocity.y);
+                        this.moveCtrl.canJump = true;
+                    } else {
+                        this.moveCtrl.canJump = false; //this.controls.getObject().position.y = this.tmpPosition.y;
+                        this.velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+                    }
+                    damping *= 0.1;
+                    //this.velocity.addScaledVector(this.velocity, damping);
+                    this.direction.z = Number(this.moveCtrl.moveForward) - Number(this.moveCtrl.moveBackward);
+                    this.direction.x = Number(this.moveCtrl.moveLeft) - Number(this.moveCtrl.moveRight);
+                    this.direction.normalize(); // this ensures consistent movements in all directions
+                    if (this.moveCtrl.moveForward || this.moveCtrl.moveBackward) this.velocity.z -= this.direction
+                        .z * 400.0 * speedDelta;
+                    if (this.moveCtrl.moveLeft || this.moveCtrl.moveRight) this.velocity.x -= this.direction.x *
+                        400.0 * speedDelta;
+                    //this.body.translateX(this.velocity.x * delta);//controls.getObject().position.x += ( velocity.x * delta );
+                    //this.body.translateY(this.velocity.y * delta);//controls.getObject().position.y += ( velocity.y * delta ); // new behavior
+                    //this.body.translateZ(this.velocity.z * delta);//controls.getObject().position.z += ( velocity.z * delta ); // new behavior
+                    this.controls.moveRight(this.velocity.x * delta);
+                    this.controls.moveForward(-this.velocity.z * delta);
+                    this.controls.getObject().position.y += (this.velocity.y * delta); // new behavior
+
+                    if (this.controls.getObject().position.y < this._height) {
+                        this.velocity.y = 0;
+                        this.controls.getObject().position.y = this._height;
+                        this.moveCtrl.canJump = true;
+                    }
+                    this.body.rotation.y = this.controls.getObject().rotation.z;
+                    //this.body.rotation.z = this.controls.getObject().rotation.z *90;
+                    this.body.position.copy(this.controls.getObject().position);
+                    //this.controls.getObject().position.copy(this.body.position);
+                }
+                prevTime = time;
+            }
+
+            initControls() {
+                let self = this;
+                const blocker = document.getElementById('blocker');
+                const instructions = document.getElementById('instructions');
+                instructions.addEventListener('click', function () {
+                    self.controls.lock();
+                });
+                this.controls.addEventListener('lock', function () {
+                    instructions.style.display = 'none';
+                    blocker.style.display = 'none';
+                });
+                this.controls.addEventListener('unlock', function () {
+                    blocker.style.display = 'block';
+                    instructions.style.display = '';
+                });
+                window.addEventListener('keydown', function (event) {
+                    self.onKeyDown(event)
+                });
+                window.addEventListener('keyup', function (event) {
+                    self.onKeyUp(event)
+                });
+
+            }
+            onKeyDown = function (event) {
+                switch (event.code) {
+                    case 'ArrowUp':
+                    case 'KeyW':
+                        this.moveCtrl.moveForward = true;
+                        break;
+
+                    case 'ArrowLeft':
+                    case 'KeyA':
+                        this.moveCtrl.moveLeft = true;
+                        break;
+
+                    case 'ArrowDown':
+                    case 'KeyS':
+                        this.moveCtrl.moveBackward = true;
+                        break;
+
+                    case 'ArrowRight':
+                    case 'KeyD':
+                        this.moveCtrl.moveRight = true;
+                        break;
+
+                    case 'Space':
+                        if (this.moveCtrl.canJump === true) this.velocity.y += 35 * 10;
+                        this.moveCtrl.canJump = false;
+                        break;
+                }
+            };
+
+            onKeyUp = function (event) {
+                switch (event.code) {
+
+                    case 'ArrowUp':
+                    case 'KeyW':
+                        this.moveCtrl.moveForward = false;
+                        break;
+
+                    case 'ArrowLeft':
+                    case 'KeyA':
+                        this.moveCtrl.moveLeft = false;
+                        break;
+
+                    case 'ArrowDown':
+                    case 'KeyS':
+                        this.moveCtrl.moveBackward = false;
+                        break;
+
+                    case 'ArrowRight':
+                    case 'KeyD':
+                        this.moveCtrl.moveRight = false;
+                        break;
+                }
+            };
+        }
+
+        function init() {
+            //rotatingCube(deltaTime);
+            //planeMaterial.emissive.setHSL(0.54, 1, 0.35 * (0.5 + 0.5 * Math.sin(35 * clock.getDelta())));
+            //---------------------------------------------------//
+            /*Pondation*/
+            //---------------------------------------------------//
+            // create a scene, that will hold all our elements such as objects, cameras and lights.
+            scene = new THREE.Scene();
+            // create a render and set the size
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.setSize(sizes.width, sizes.height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.VSMShadowMap;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            // add the output of the render function to the HTML
+            document.body.appendChild(renderer.domElement);
+
+            // create a camera, which defines where we're looking at
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
+            // tell the camera where to look
+            camera.position.set(0, 400, 400);
+            camera.rotation.x = -45 * Math.PI / 180;
+
+            window.addEventListener('resize', onWindowResize);
+
+            function onWindowResize() {
+                sizes.width = window.innerWidth;
+                sizes.height = window.innerHeight;
+                renderer.setSize(sizes.width, sizes.height);
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                resizeShadowMapViewers()
+            }
+
+            //---------------------------------------------------//
+            /*Post Processing*/
+            //---------------------------------------------------//
+            let composer;
+
+            function initPostFX() {
+                composer = new EffectComposer(renderer);
+                composer.setSize(renderer.domElement.width, renderer.domElement.height);
+                const renderPass = new RenderPass(scene, camera);
+                composer.addPass(renderPass);
+                var bokehPass = new BokehPass(scene, camera, {
+                    focus: 1.0,
+                    aperture: 1,
+                    maxblur: 0.01,
+                    width: sizes.width,
+                    height: sizes.height
+                });
+
+                composer.addPass(bokehPass);
+                const fxaaPass = new ShaderPass(FXAAShader);
+                const pixelRatio = renderer.getPixelRatio();
+                fxaaPass.material.uniforms['resolution'].value.x = 1 / (document.body.offsetWidth * pixelRatio);
+                fxaaPass.material.uniforms['resolution'].value.y = 1 / (document.body.offsetHeight * pixelRatio);
+                composer.addPass(fxaaPass);
+                const afterimagePass = new AfterimagePass();
+                //composer.addPass( afterimagePass );
+                const CopyPass = new ShaderPass(CopyShader);
+                CopyPass.renderToScreen = true;
+                composer.addPass(CopyPass);
+
+                const RGBShift = new ShaderPass(RGBShiftShader);
+                RGBShift.uniforms['amount'].value = 0.0035;
+                RGBShift.uniforms['angle'].value = 3.5;
+                composer.addPass(RGBShift);
+            }
+            //---------------------------------------------------//
+            /*Light*/
+            //---------------------------------------------------//
+            let light, ambilight, DLight, fillLight1;
+
+            function initLights() {
+                ambilight = new THREE.AmbientLight(0x737373, 0.25);
+                scene.add(ambilight);
+                light = new THREE.PointLight(0xf4b400, 400, 1000);
+                light.position.set(0, 800, 1.5);
+                light.castShadow = true; // default false
+                //Set up shadow properties for the light
+                light.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+                light.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+                light.shadow.camera.near = 0.05;
+                light.shadow.camera.far = 2000;
+                light.shadow.bias = -0.00006;
+                scene.add(light);
+
+                DLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                DLight.position.set(-200, 625, 900);
+                DLight.castShadow = true;
+                DLight.shadow.darkness = 0.01;
+                DLight.shadow.radius = 5;
+                //DLight.shadow.blurSamples = 15;
+                DLight.shadow.mapSize.width = SHADOW_MAP_DLight;
+                DLight.shadow.mapSize.height = SHADOW_MAP_DLight;
+                DLight.shadow.bias = -0.00008;
+                DLight.shadow.camera.near = 505;
+                DLight.shadow.camera.far = 3000;
+                // DirectionalLight only; not necessary for PointLight
+                DLight.shadow.camera.left = -DsArea;
+                DLight.shadow.camera.right = DsArea;
+                DLight.shadow.camera.top = DsArea;
+                DLight.shadow.camera.bottom = -DsArea;
+                DLight.shadow.camera.visible = true;
+                scene.add(DLight);
+
+                fillLight1 = new THREE.HemisphereLight(0x4285f4, 0x002244, 0.25);
+                fillLight1.position.set(10, 200, -600);
+                fillLight1.color.setHSL(0.6, 1, 0.6);
+                fillLight1.groundColor.setHSL(0.095, 1, 0.75);
+                fillLight1.castShadow = false;
+                scene.add(fillLight1);
+            }
+            //Create a helper for the shadow camera (optional)
+            //scene.add(new THREE.DirectionalLightHelper(DLight, 2));
+            //scene.add(new THREE.CameraHelper(DLight.shadow.camera));
+            //---------------------------------------------------//
+            /*ShadowMapViewer*/
+            //---------------------------------------------------//
+            let lightShadowMapViewer, DLightShadowMapViewer;
+
+            function initShadowViewer() {
+                lightShadowMapViewer = new ShadowMapViewer(light);
+                DLightShadowMapViewer = new ShadowMapViewer(DLight);
+                resizeShadowMapViewers();
+            }
+
+            function renderShadowMapViewers() {
+                DLightShadowMapViewer.render(renderer);
+                lightShadowMapViewer.render(renderer);
+            }
+
+            function resizeShadowMapViewers() {
+                const w = window.innerWidth * 0.15;
+                const h = window.innerHeight * 0.15;
+                lightShadowMapViewer.position.x = 10;
+                lightShadowMapViewer.position.y = sizes.height - (SHADOW_MAP_HEIGHT / 4) - 10;
+                lightShadowMapViewer.size.width = w;
+                lightShadowMapViewer.size.height = h;
+                DLightShadowMapViewer.position.x = 10;
+                DLightShadowMapViewer.position.y = 10;
+                DLightShadowMapViewer.size.width = w;
+                DLightShadowMapViewer.size.height = h;
+                DLightShadowMapViewer.update(); //Required when setting position or size directly
+            }
+            //---------------------------------------------------//
+            /*SKYDOME*/
+            //---------------------------------------------------//
+            let sky;
+
+            function initSky() {
+                const vertexShader = document.getElementById('vertexShader').textContent;
+                const fragmentShader = document.getElementById('fragmentShader').textContent;
+                const uniforms = {
+                    'topColor': {
+                        value: new THREE.Color(0x0077ff)
+                    },
+                    'bottomColor': {
+                        value: new THREE.Color(0xffffff)
+                    },
+                    'offset': {
+                        value: 33
+                    },
+                    'exponent': {
+                        value: 0.6
+                    }
+                };
+                uniforms['topColor'].value.copy(fillLight1.color);
+
+                //scene.fog = new THREE.Fog(0x9db3b5, 0, 800);
+                scene.fog = new THREE.FogExp2(uniforms['bottomColor'].value5, 0.002);
+
+                const skyGeo = new THREE.SphereGeometry(2000, 32, 16);
+                const skyMat = new THREE.ShaderMaterial({
+                    uniforms: uniforms,
+                    vertexShader: vertexShader,
+                    fragmentShader: fragmentShader,
+                    side: THREE.BackSide
+                });
+
+                sky = new THREE.Mesh(skyGeo, skyMat);
+                //sky.scale.set(-1, 1, 1);  
+                sky.eulerOrder = 'XZY';
+                sky.renderDepth = 1000.0;
+                sky.position.set(0, 0, 0);
+                scene.add(sky);
+            }
+            //---------------------------------------------------//
+            /*Materials*/
+            //---------------------------------------------------//
+            let material, imgTexture, texMat;
+
+            function initMat() {
+                imgTexture = new THREE.TextureLoader().load("assets/textures/brick_diffuse.jpg");
+                imgTexture.wrapS = imgTexture.wrapT = THREE.RepeatWrapping;
+                imgTexture.encoding = THREE.sRGBEncoding;
+                imgTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                imgTexture.minFilter = THREE.LinearFilter;
+                imgTexture.repeat.set(1, 1);
+                //imgTexture.transformUv(new THREE.Vector2(100,100));
+                material = new THREE.MeshPhysicalMaterial({
+                    color: 0xff0000,
+                    metalness: 1.0,
+                    roughness: 0.5,
+                    clearcoat: 1.0,
+                    clearcoatRoughness: 0.03,
+                    sheen: 0.5
+                });
+
+                texMat = new THREE.MeshPhongMaterial({
+                    map: imgTexture,
+                    color: 0xffffff,
+                    emissive: 0xff0000,
+                    specular: 0x009900,
+                    shininess: 30,
+                    transparent: false,
+                    flatShading: true,
+                    reflectivity: 0.3,
+                    envMap: sky
+                });
+            }
+            //---------------------------------------------------//
+            /*Geometry*/
+            //---------------------------------------------------//
+
+            const loader = new GLTFLoader().setPath('./assets/models/gltf/');
+
+            /*loader.load('collision-world.glb', (gltf) => {
+
+                scene.add(gltf.scene);
+
+                worldOctree.fromGraphNode(gltf.scene);
+
+                gltf.scene.traverse(child => {
+
+                    if (child.isMesh) {
+
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+
+                        if (child.material.map) {
+
+                            child.material.map.anisotropy = 4;
+                        }
+                    }
+                });
+
+                const helper = new OctreeHelper(worldOctree);
+                helper.visible = false;
+                scene.add(helper);
+
+                const gui = new GUI({
+                    width: 200
+                });
+                gui.add({
+                        debug: false
+                    }, 'debug')
+                    .onChange(function (value) {
+
+                        helper.visible = value;
+
+                    });
+
+                animate();
+
+            });*/
+            let cube, planeMaterial;
+
+            function createStartingMesh() {
+                let geometry = new THREE.SphereBufferGeometry(100, 100, 100);
+                cube = new THREE.Mesh(
+                    geometry,
+                    material
+                );
+                cube.castShadow = true; //default is false
+                cube.receiveShadow = true; //default
+                objects.push(cube);
+                scene.add(cube);
+                for (var i = 0; i < 300; i++) {
+                    var xScale = Math.random() * 50 + 10;
+                    objects[i] = new THREE.Mesh(new THREE.BoxBufferGeometry(xScale, Math.random() * xScale *
+                        8 + 8,
+                        xScale), texMat);
+                    objects[i].position.set(Math.floor((Math.random() * 200 - 100) * 4), 0.49, Math.floor((
+                        Math
+                        .random() * 200 - 100) * 4));
+                    objects[i].lookAt(0, 0, 0);
+                    scene.add(objects[i]);
+                }
+                const buildings = [];
+                for (var i = 0; i < 300; i++) {
+                    var xScale = Math.random() * 50 + 10;//var geo = new THREE.BoxBufferGeometry(1, 1, 1);
+                    var building = new THREE.BoxBufferGeometry(xScale, Math.random() * xScale * 8 + 8, xScale); 
+                    var translation = new THREE.Matrix4().makeTranslation( 
+                        Math.floor((Math.random() * 200 - 100) * 4), 0.49, Math.floor((Math.random() * 200 - 100) * 4));
+                    building.applyMatrix(translation);
+                    building.attributes.uv.set(new THREE.Vector2(10, 10));
+                    building.lookAt(new THREE.Vector3(0, 0, 0));
+                    building.computeBoundingBox();
+                    buildings.push(building);
+                    //console.log(buildings.length);
+                }
+
+                const cityGeometry = BufferGeometryUtils.mergeBufferGeometries(buildings);
+                const city = new THREE.Mesh(cityGeometry, texMat);
+                const box = new THREE.Box3();
+                city.geometry
+                    .computeBoundingBox(); // ensure the bounding box is computed for its geometry, this should be done only once (assuming static geometries)
+                // in the animation loop, compute the current bounding box with the world matrix
+                box.copy(city.geometry.boundingBox).applyMatrix4(city.matrixWorld);
+                box.setFromObject(city);
+
+                var uvAttribute = cityGeometry.attributes.uv;
+                for (var i = 0; i < uvAttribute.count; i++) {
+
+                    var u = uvAttribute.getX(i);
+                    var v = uvAttribute.getY(i);
+
+                    // do something with uv
+                    u = u % 3.14;
+                    v = v % 3.14;
+
+                    // write values back to attribute
+
+                    uvAttribute.setXY(i, u, v);
+
+                }
+                uvAttribute.normalized = true;
+                uvAttribute.needsUpdate = true;
+                city.castShadow = true;
+                city.receiveShadow = true;
+                scene.add(city);
+                worldOctree.fromGraphNode(city);
+
+
+                let planeGeometry = new THREE.PlaneGeometry(2000, 2000, 20, 20);
+                planeMaterial = new THREE.MeshLambertMaterial({
+                    color: 0x00ff00,
+                    side: THREE.FrontSide
+                })
+                let plane = new THREE.Mesh(planeGeometry, planeMaterial);
+                plane.rotation.x = degrees_to_radians(-90);
+                plane.position.set(0, -2.5, 3);
+                plane.castShadow = false;
+                plane.receiveShadow = true;
+                objects.push(plane);
+                scene.add(plane);
+            }
+
+            let makePlayer = function () {
+                player = new Player();
+            }
+            let constructCollisionBoxes = function () {
+
+                objects.forEach(function (mesh) {
+                    // Bounding Box
+                    mesh.BBox = new THREE.Box3().setFromObject(mesh);
+
+                    // helper
+                    mesh.BBoxHelper = new THREE.BoxHelper(mesh, 0xff0000);
+                    scene.add(mesh.BBoxHelper);
+                });
+            }
+
+            function rotatingCube() {
+                xRot += 0.02;
+                cube.rotation.x = xRot;
+                cube.rotation.y = xRot;
+                cube.rotation.z = xRot;
+                cube.position.x = 500 * Math.cos(degrees_to_radians(xRot * 100));
+                cube.position.y = 500 * Math.sin(degrees_to_radians(xRot * 100));
+            }
+
+            function animate() {
+                const time = performance.now();
+                player.update(time);
+                rotatingCube();
+                planeMaterial.emissive.setHSL(0.54, 1, 0.35 * (0.5 + 0.5 * Math.sin(35 * clock.getDelta())));
+            }
+
+            function render() {
+                composer.render();
+                //renderShadowMapViewers();
+                var delta = clock.getDelta();
+
+            }
+            // function for re-rendering/animating the scene
+            function tick() {
+                animate();
+                render();
+                requestAnimationFrame(tick);
+            }
+
+            makePlayer();
+            initLights();
+            initShadowViewer();
+            initSky();
+            initPostFX();
+            initMat();
+            createStartingMesh();
+            constructCollisionBoxes();
+            tick();
+        }
+        init();
+    </script>
+</body>
+
+</html>

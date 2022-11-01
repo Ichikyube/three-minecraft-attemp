@@ -1,0 +1,62 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"parent": "block/block",
+	"textures": {
+		"particle": "block/jungle_fence",
+		"texture": "block/jungle_fence"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Box2",
+			"from": [ 7.25, 1.5, 0 ],
+			"to": [ 8.75, 2.5, 8 ],
+			"faces": {
+				"down": { "uv": [ 1.5, 4, 2, 6.5 ], "texture": "#texture", "rotation": 270 },
+				"up": { "uv": [ 2, 7, 4.5, 8 ], "texture": "#texture", "rotation": 180 },
+				"north": { "uv": [ 6.5, 13, 9, 14 ], "texture": "#texture" },
+				"south": { "uv": [ 9, 12, 6.5, 13 ], "texture": "#texture" },
+				"west": { "uv": [ 6, 4, 7.5, 4.5 ], "texture": "#texture", "rotation": 270 },
+				"east": { "uv": [ 6, 4, 7.5, 4.5 ], "texture": "#texture", "rotation": 270 }
+			}
+		},
+		{
+			"__comment": "Box2",
+			"from": [ 7.5, 8.5, 0 ],
+			"to": [ 8.5, 9, 8 ],
+			"faces": {
+				"down": { "uv": [ 10, 8, 11, 9.5 ], "texture": "#texture", "rotation": 90 },
+				"up": { "uv": [ 12, 8, 12.5, 9.5 ], "texture": "#texture", "rotation": 270 },
+				"north": { "uv": [ 10, 11, 10.5, 11.5 ], "texture": "#texture" },
+				"south": { "uv": [ 10, 11, 10.5, 11.5 ], "texture": "#texture" },
+				"west": { "uv": [ 9.5, 10, 11, 10.5 ], "texture": "#texture" },
+				"east": { "uv": [ 8.5, 10, 9, 10.5 ], "texture": "#texture" }
+			}
+		},
+		{
+			"__comment": "Box2",
+			"from": [ 7.75, 2.5, 2.25 ],
+			"to": [ 8.25, 8.5, 3.25 ],
+			"faces": {
+				"down": { "uv": [ 0, 7.25, 16, 8.75 ], "texture": "#texture", "rotation": 90 },
+				"up": { "uv": [ 0, 7.25, 16, 8.75 ], "texture": "#texture", "rotation": 270 },
+				"north": { "uv": [ 7, 13.5, 7.5, 14.5 ], "texture": "#texture" },
+				"south": { "uv": [ 8, 13.5, 8.5, 14.5 ], "texture": "#texture" },
+				"west": { "uv": [ 8, 9, 8.5, 10 ], "texture": "#texture", "rotation": 270 },
+				"east": { "uv": [ 8, 9, 8.5, 10 ], "texture": "#texture", "rotation": 90 }
+			}
+		},
+		{
+			"__comment": "Box2",
+			"from": [ 7, 11.5, 0 ],
+			"to": [ 9, 13.5, 8 ],
+			"faces": {
+				"down": { "uv": [ 7, 7, 8.5, 8.5 ], "texture": "#texture" },
+				"up": { "uv": [ 3, 6.5, 8, 8 ], "texture": "#texture", "rotation": 180 },
+				"north": { "uv": [ 9.5, 9, 10, 12 ], "texture": "#texture" },
+				"south": { "uv": [ 9.5, 9, 10, 12 ], "texture": "#texture" },
+				"west": { "uv": [ 9.5, 9, 10, 12 ], "texture": "#texture" },
+				"east": { "uv": [ 9.5, 9, 10, 12 ], "texture": "#texture" }
+			}
+		}
+	]
+}

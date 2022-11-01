@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "": [
+			{ "model": "biomesoplenty:block/ethereal_leaves" },
+			{ "model": "biomesoplenty:block/ethereal_leaves_1" },
+			{ "model": "biomesoplenty:block/ethereal_leaves_2" },
+			{ "model": "biomesoplenty:block/ethereal_leaves_3" }
+		
+		]
+    }
+}

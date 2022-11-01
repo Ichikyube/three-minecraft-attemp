@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "../assets/js/three.module.js",
+                "addons/": "../assets/jsm/",
+                "vendor/": "../assets/vendor/",
+                "parts/": "../Components/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import * as dat from 'vendor/gui/dat.gui.module.js';
+        import {
+            OrbitControls
+        } from "addons/controls/OrbitControls.js";
+        import {
+            MeshSurfaceSampler
+        } from "addons/math/MeshSurfaceSampler.js";
+        import {
+            TextGeometry
+        } from "addons/geometries/TextGeometry.js";
+        import {
+            FontLoader
+        } from "addons/loaders/FontLoader.js";
+        import {
+            currentPhase,
+            SunSphere,
+            SunLight,
+            SunShine,
+            StarField,
+            Skydom
+        } from 'parts/DayNight.js';
+        import {
+            mappedGround
+        } from "parts/Terrain.js";
+        const characters = [];
+        let nCharacters = 0;
+        //---------------------------------------------------//
+        /*--------------------Variables----------------------*/
+        //---------------------------------------------------//
+        var scene, camera, renderer, ground;
+        const SHADOW_MAP_WIDTH = 548,
+            SHADOW_MAP_HEIGHT = 524;
+        const DsArea = 70;
+        const objects = [];
+        const lights = [];
+        const helpers = [];
+        const animateTasks = [];
+        const materials = [];
+        const params = []
+        const vertex = new THREE.Vector3();
+        const color = new THREE.Color();
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        //---------------------------------------------------//
+        /*--------------------Day&Night----------------------*/
+        //---------------------------------------------------//
+
+        var sunAngle = -1 / 6 * Math.PI * 2;
+        var sunAngle = -3 / 6 * Math.PI * 2;
+        animateTasks.push(function (delta, now) {
+            var dayDuration = 20 // nb seconds for a full day cycle
+            sunAngle += delta / dayDuration * Math.PI * 2
+        })
+
+        var starField = new StarField()
+        objects.push(starField.object3d)
+        animateTasks.push(function (delta, now) {
+            starField.update(sunAngle)
+        })
+
+        var sunSphere = new SunSphere()
+        objects.push(sunSphere.object3d)
+        animateTasks.push(function (delta, now) {
+            sunSphere.update(sunAngle)
+        })
+
+        var sunLight = new SunLight()
+        objects.push(sunLight.object3d)
+        animateTasks.push(function (delta, now) {
+            sunLight.update(sunAngle)
+        })
+
+        var skydom = new Skydom()
+        objects.push(skydom.object3d)
+        animateTasks.push(function (delta, now) {
+            skydom.update(sunAngle)
+        })
+
+        function init() {
+            // create a scene, that will hold all our elements such as objects, cameras and lights.
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x110101, 0.002);
+            // create a camera, which defines where we're looking at
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1300);
+            // tell the camera where to look
+            camera.position.set(0, 0, 10);
+            const sizes = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }
+            renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer()
+            renderer.setSize(sizes.width, sizes.height);
+
+            //renderer.setClearColor(scene.fog.color, 1);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.VSMShadowMap;
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = Math.pow(1, 5.0); // to allow for very bright scenes.
+            // add the output of the render function to the HTML
+            document.body.appendChild(renderer.domElement);
+
+            // create controls for the GUI
+            var controls = new OrbitControls(camera, renderer.domElement);
+            controls.maxPolarAngle = 0.9 * Math.PI / 2;
+            controls.enableZoom = true;
+
+            /*var camcontrols = new TrackballControls(camera, renderer.domElement);
+            camcontrols.enabled = true;
+            camcontrols.rotateSpeed = 1.0;
+            camcontrols.zoomSpeed = 1.2;
+            camcontrols.panSpeed = 0.8;
+
+            camcontrols.keys = ['KeyA', 'KeyS', 'KeyD'];
+
+            const keyStates = {};*/
+            window.addEventListener('resize', onResize, false);
+
+            function onResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+            initLight(scene)
+            initMesh(scene)
+            initText(scene)
+            objects.forEach(function (object) {
+                scene.add(object);
+            })
+            SunShine(scene);
+            // create the GUI
+            var gui = new dat.GUI();
+            // gui.add(controls, 'scaleX', 0, 5);
+
+            var clock = new THREE.Clock()
+            ground = new mappedGround(150,150,0.2);
+
+            ground.applyMatrix4(new THREE.Matrix4().setPosition(new THREE.Vector3(0, -21, 0)));
+            //ground.scale.multiplyScalar(0.1);
+            //ground.position.y = -81
+            ground.updateMatrix();
+            scene.add(ground)
+            ground.receiveShadow = true;
+            var grassGeometry, grassMaterial;
+            var grassHeight = 5, grassWidth = 2, grassCount = 20000;
+            grassGeometry = new THREE.PlaneGeometry(grassWidth, grassHeight, 1, 1);
+            var textureLoader = new THREE.TextureLoader();
+            var grassMap = textureLoader.load("../assets/textures/grass/grass01.png");
+            grassMaterial = new THREE.MeshPhongMaterial({
+                map: grassMap,
+                color: 'grey',
+                emissive: 'darkgreen',
+                emissiveIntensity:0.06,
+                alphaTest: 0.7,
+                side: THREE.DoubleSide
+            });
+            const sampler = new MeshSurfaceSampler(ground).build();
+            const tempPosition = new THREE.Vector3();
+            const tempObject = new THREE.Object3D();
+            let grassMasses = new THREE.InstancedMesh( grassGeometry, grassMaterial, grassCount )
+            scene.add(grassMasses)
+            for (var i = 0, l = grassCount; i < l; i = i + 3) {
+                sampler.sample(tempPosition);
+                tempObject.position.x = tempPosition.x;
+                tempObject.position.z = tempPosition.z;
+                tempObject.position.y = tempPosition.y;
+                tempObject.rotation.y = Math.random() * Math.PI;
+                tempObject.scale.setScalar(Math.random() * 0.5 + 0.5);
+                tempObject.updateMatrix();
+                grassMasses.setMatrixAt(i, tempObject.matrix);
+                tempObject.rotation.y = tempObject.rotation.y + Math.PI / 3;
+                tempObject.updateMatrix();
+                grassMasses.setMatrixAt(i + 1, tempObject.matrix);
+                tempObject.rotation.y = tempObject.rotation.y + Math.PI * 2 / 3;
+                tempObject.updateMatrix();
+                grassMasses.setMatrixAt(i + 2, tempObject.matrix);
+            }
+            grassMasses.applyMatrix4(ground.matrix);
+            grassMasses.position.setFromMatrixPosition(ground.matrix)
+            grassMasses.updateMatrix();
+            grassMasses.castShadow =true;
+            grassMasses.receiveShadow =true;
+            grassMasses.position.y = -20
+            // function for re-rendering/animating the scene
+            function tick() {
+                requestAnimationFrame(tick);
+                controls.update();
+                animateTasks.forEach(function (onTask) {
+                    onTask(clock.getDelta())
+                })
+                renderer.render(scene, camera);
+            }
+            tick();
+        }
+        init();
+        const Lights = [];
+
+        function initLight(scene) {
+            let Ambient = new THREE.AmbientLight(0x737373, 0.075);
+            let MainLight = new THREE.DirectionalLight();
+            MainLight.castShadow = true;
+            //let MainShadow = new THREE.DirectionalLightShadow();
+            let PLight = new THREE.PointLight();
+            let spotLight = new THREE.SpotLight(0xffffff, 1);
+            spotLight.position.set(16, 30, 0); //16, 22, 0
+            spotLight.angle = Math.PI / 4;
+            spotLight.penumbra = 0.1;
+            spotLight.decay = 2;
+            spotLight.distance = 200;
+            let AreaLight = new THREE.RectAreaLight();
+            let target = THREE.object3D;
+            //scene.add(Ambient, MainLight)
+            //scene.add( PLight, spotLight, AreaLight)
+
+        }
+
+
+        function Textures() {
+            let Loader = new THREE.ImageLoader();
+            this.spriteParticle = Loader.load("../assets/textures/particles/sprite-sheet.png");
+        }
+
+        function Material() {
+            this.basic = new THREE.MeshLambertMaterial({
+                color: 0x02590f,
+                reflectivity: 0.2
+            });
+
+        }
+
+        function initMesh(scene) {
+            var Mat = new Material();
+            let box1 = new THREE.Mesh(
+                new THREE.BoxBufferGeometry,
+                new THREE.MeshBasicMaterial({
+                    color: 'red'
+                })
+            )
+            scene.add(box1)
+            box1.castShadow = true;
+        }
+
+
+        function importScene(params) {
+            const loader = new THREE.ObjectLoader();
+
+            loader.load(
+                // resource URL
+                "models/json/example.json",
+
+                // onLoad callback
+                // Here the loaded data is assumed to be an object
+                function (obj) {
+                    // Add the loaded object to the scene
+                    scene.add(obj);
+                },
+
+                // onProgress callback
+                function (xhr) {
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                },
+
+                // onError callback
+                function (err) {
+                    console.error('An error happened');
+                }
+            );
+            // Alternatively, to parse a previously loaded JSON structure
+            const object = loader.parse(a_json_object);
+
+            scene.add(object);
+        }
+
+
+        function initText(scene) {
+            const textLoader = new FontLoader();
+            const font = textLoader.load("../assets/fonts/optimer_bold.typeface.json",
+                // onLoad callback
+                function onLoad(font) {
+                    var textGeometry = new TextGeometry("My Text", {
+                        font: font,
+                        size: 9,
+                        height: 5,
+                        curveSegments: 12,
+                        bevelThickness: 2,
+                        bevelSize: 0.6,
+                        bevelEnabled: true,
+                    });
+                    var textMaterial = new THREE.MeshPhongMaterial({
+                        color: 0xff0000,
+                        flatShading: true
+                    });
+                    var textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                    textMesh.position.set(-9, 4, -12);
+                    textMesh.scale.multiplyScalar(0.6);
+                    scene.add(textMesh);
+                    textMesh.castShadow = true;
+                },
+                // onProgress callback
+                function onProgress() {
+                    // do something
+                },
+                // onError callback
+                function onError(err) {
+                    console.log('An error happened');
+                }
+            );
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+{
+	"format_version": "1.16.0",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "minecraft:bow",
+			"materials": {
+				"default": "entity_alphatest",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/entity/bow_uv",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.bow_standby"
+			},
+			"sound_effects": {
+                "revolver.cocking": "revolver.cocking",
+                "revolver.tricks0": "revolver.tricks0",
+                "revolver.tricks1": "revolver.tricks1",
+                "revolver.tricks2": "revolver.tricks2"
+            },
+			"animations": {
+				"bow_first_person": "controller.animation.bow.first_person",
+				"bow_first_person_tricks": "controller.animation.bow.tricks",
+				"bow_first_person_sprint": "controller.animation.bow.sprint",
+				"bow_first_person_not_sprint": "controller.animation.bow.not.sprint",
+				"bow_first_person_use": "controller.animation.bow.use",
+				"bow_third_person": "controller.animation.bow.third_person",
+				"bow_first_person_pull": "controller.animation.bow_pull",
+				"wield": "animation.bow.wield",
+				"wield_first_person_pull": "animation.bow.wield_first_person_pull",
+				"wield_first_person_use": "animation.bow.wield_first_person_use",
+				"wield_first_person_sprint": "animation.bow.wield_first_person_sprint",
+				"wield_first_person_not_sprint": "animation.bow.wield_first_person_not_sprint",
+				"wield_first_person_tricks": "animation.bow.tricks",
+				"thirdperson_main_hand": "animation.bow.wield_third_person"
+			},
+			"scripts": {
+				"animate": [
+					"bow_first_person",
+					"bow_third_person",
+					"bow_first_person_tricks",
+					"bow_first_person_sprint",
+					"bow_first_person_use",
+					"bow_first_person_not_sprint",
+					"bow_first_person_pull"
+				]
+			},
+			"render_controllers": ["controller.render.default"]
+		}
+	}
+}

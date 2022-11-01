@@ -1,0 +1,264 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.piano_cchord": {
+			"animation_length": 2.5,
+			"bones": {
+				"C": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.2917": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"E": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.2917": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"G": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.2917": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				}
+			},
+			"sound_effects": {
+				"0.0417": {
+					"effect": "piano.cchord"
+				}
+			}
+		},
+		"animation.piano_dchord": {
+			"animation_length": 2.08333,
+			"bones": {
+				"Fsharp": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [12.5, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"D": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"A": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "piano.dchord"
+				}
+			}
+		},
+		"animation.piano_echord": {
+			"animation_length": 2,
+			"bones": {
+				"Gsharp": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [15, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"E": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"A": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "piano.echord"
+				}
+			}
+		},
+		"animation.piano_fchord": {
+			"animation_length": 2,
+			"bones": {
+				"F": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"G": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"B": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "piano.fchord"
+				}
+			}
+		},
+		"animation.piano_gchord": {
+			"animation_length": 2,
+			"bones": {
+				"G": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"A": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"B": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "piano.gchord"
+				}
+			}
+		},
+		"animation.piano_achord": {
+			"animation_length": 2,
+			"bones": {
+				"Csharp": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [12.5, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"E": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [12.5, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"A": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "piano.achord"
+				}
+			}
+		},
+		"animation.piano_bchord": {
+			"animation_length": 2,
+			"bones": {
+				"D": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"F": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [10, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"B": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.125": [12.5, 0, 0],
+						"0.3333": [0, 0, 0]
+					},
+					"position": [0, 0, 0],
+					"scale": 1
+				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "piano.bchord"
+				}
+			}
+		}
+	}
+}

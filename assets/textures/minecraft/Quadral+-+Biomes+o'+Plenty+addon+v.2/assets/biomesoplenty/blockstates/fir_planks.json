@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/fir_planks" },
+		{ "model": "biomesoplenty:block/fir_planks_1" },
+		{ "model": "biomesoplenty:block/fir_planks_2" },
+		{ "model": "biomesoplenty:block/fir_planks_3" }
+		]
+    }
+}

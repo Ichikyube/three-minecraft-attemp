@@ -1,0 +1,171 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.crossbow",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 3,
+				"visible_bounds_offset": [0, 1.5, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "waist",
+					"parent": "root",
+					"pivot": [0, 12, 0]
+				},
+				{
+					"name": "body",
+					"parent": "waist",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "head",
+					"parent": "body",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "hat",
+					"parent": "head",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "cape",
+					"parent": "body",
+					"pivot": [0, 24, 3]
+				},
+				{
+					"name": "leftArm",
+					"parent": "body",
+					"pivot": [5, 22, 0]
+				},
+				{
+					"name": "leftSleeve",
+					"parent": "leftArm",
+					"pivot": [5, 22, 0]
+				},
+				{
+					"name": "leftItem",
+					"parent": "leftArm",
+					"pivot": [6, 15, 1]
+				},
+				{
+					"name": "rightArm",
+					"parent": "body",
+					"pivot": [-5, 22, 0]
+				},
+				{
+					"name": "rightSleeve",
+					"parent": "rightArm",
+					"pivot": [-5, 22, 0]
+				},
+				{
+					"name": "rightItem",
+					"parent": "rightArm",
+					"pivot": [-6, 15, 1],
+					"locators": {
+						"lead_hold": [-6, 15, 1]
+					}
+				},
+				{
+					"name": "Shotgun",
+					"parent": "rightItem",
+					"pivot": [-5, 12, -2],
+					"rotation": [90, 0, -90]
+				},
+				{
+					"name": "barrel",
+					"parent": "Shotgun",
+					"pivot": [-13, 14, -2],
+					"cubes": [
+						{"origin": [-19, 12, -2], "size": [7, 2, 0], "uv": [18, 6]},
+						{"origin": [-25, 14, -4], "size": [16, 2, 4], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "Shell",
+					"parent": "barrel",
+					"pivot": [-10, 15, -2]
+				},
+				{
+					"name": "shell2",
+					"parent": "Shell",
+					"pivot": [-11, 15, -1],
+					"cubes": [
+						{"origin": [-12, 14.5, -1.5], "size": [3, 1, 1], "uv": [0, 23]}
+					]
+				},
+				{
+					"name": "shell3",
+					"parent": "Shell",
+					"pivot": [-12, 15, -3],
+					"cubes": [
+						{"origin": [-12, 14.5, -3.5], "size": [3, 1, 1], "uv": [22, 14]}
+					]
+				},
+				{
+					"name": "release",
+					"parent": "Shotgun",
+					"pivot": [-7, 14, -2],
+					"cubes": [
+						{"origin": [-7, 12, -1.9], "size": [4, 4, 0], "uv": [20, 8]}
+					]
+				},
+				{
+					"name": "handlesection",
+					"parent": "Shotgun",
+					"pivot": [-12, 6, -1],
+					"cubes": [
+						{"origin": [-9, 12, -3], "size": [3, 2, 2], "uv": [0, 19]},
+						{"origin": [-9, 14, -4], "size": [2, 2, 4], "uv": [14, 12]},
+						{"origin": [-5.73205, 13, -3], "size": [7, 2, 2], "inflate": 0.01, "pivot": [-7.73205, 15, -2], "rotation": [0, 0, 30], "uv": [0, 12]},
+						{"origin": [-0.3, 8.8, -3], "size": [7, 4, 2], "inflate": 0.1, "pivot": [-0.42364, 10.5623, -2], "rotation": [0, 0, 15], "uv": [0, 6]},
+						{"origin": [-9, 10, -2], "size": [4, 2, 0], "uv": [22, 12]},
+						{"origin": [-15, 13, -3], "size": [6, 1, 2], "uv": [0, 16]},
+						{"origin": [-15, 12, -2], "size": [6, 2, 0], "inflate": 0.01, "uv": [16, 18]}
+					]
+				},
+				{
+					"name": "cock",
+					"parent": "Shotgun",
+					"pivot": [-6, 14, -2],
+					"cubes": [
+						{"origin": [-7, 12, -0.9], "size": [4, 5, 0], "uv": [18, 20]},
+						{"origin": [-7, 12, -3.1], "size": [4, 5, 0], "uv": [10, 20]}
+					]
+				},
+				{
+					"name": "jacket",
+					"parent": "body",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "leftLeg",
+					"parent": "root",
+					"pivot": [1.9, 12, 0]
+				},
+				{
+					"name": "leftPants",
+					"parent": "leftLeg",
+					"pivot": [1.9, 12, 0]
+				},
+				{
+					"name": "rightLeg",
+					"parent": "root",
+					"pivot": [-1.9, 12, 0]
+				},
+				{
+					"name": "rightPants",
+					"parent": "rightLeg",
+					"pivot": [-1.9, 12, 0]
+				}
+			]
+		}
+	]
+}

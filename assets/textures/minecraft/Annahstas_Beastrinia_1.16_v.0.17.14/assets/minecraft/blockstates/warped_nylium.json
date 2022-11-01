@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "": [
+		    { "model": "block/warped_nylium", "weight": 120 },
+		    { "model": "block/warped_nylium_1", "weight": 15 },
+			{ "model": "block/warped_nylium_2", "weight": 15 },
+			{ "model": "block/warped_nylium_3", "weight": 15 }
+        ]
+	}
+}

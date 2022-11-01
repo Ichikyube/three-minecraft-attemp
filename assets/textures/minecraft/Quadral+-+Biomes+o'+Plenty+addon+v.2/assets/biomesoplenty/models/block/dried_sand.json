@@ -1,0 +1,8 @@
+{
+    "parent": "block/cube_bottom_top",
+    "textures": {
+        "bottom": "biomesoplenty:block/dried_sand_top",
+        "top": "biomesoplenty:block/dried_sand_top",
+        "side": "biomesoplenty:block/dried_sand"
+    }
+}

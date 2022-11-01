@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "": [
+			{ "model": "block/sculk" },
+			{ "model": "block/sculk", "y": 90, "x": 90},
+			{ "model": "block/sculk", "x": 90, "y": 90},
+			{ "model": "block/sculk", "y": 180, "x": 90}
+    ]
+  }
+}

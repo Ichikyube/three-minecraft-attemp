@@ -1,0 +1,18 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.smokearrow": {
+			"animation_length": 2,
+			"particle_effects": {
+				"0.0": {
+					"effect": "arrow.sparc",
+					"locator": "smokyboi"
+				},
+				"0.0417": {
+					"effect": "arrow.smoke",
+					"locator": "smokyboi"
+				}
+			}
+		}
+	}
+}

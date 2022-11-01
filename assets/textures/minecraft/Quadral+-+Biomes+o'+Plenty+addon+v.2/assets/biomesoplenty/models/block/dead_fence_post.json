@@ -1,0 +1,8 @@
+{
+    "parent": "block/template_fence_post",
+    "textures": {
+	    "particle": "biomesoplenty:block/dead_planks",
+        "side": "biomesoplenty:block/fence_dead_side",
+        "top":  "biomesoplenty:block/fence_dead_top"
+    }
+}

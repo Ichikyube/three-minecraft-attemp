@@ -1,0 +1,8 @@
+{
+    "parent": "block/template_fence_side",
+    "textures": {
+	    "particle": "biomesoplenty:block/ethereal_planks",
+        "side": "biomesoplenty:block/fence_ethereal_side",
+        "top":  "biomesoplenty:block/fence_ethereal_top"
+    }
+}

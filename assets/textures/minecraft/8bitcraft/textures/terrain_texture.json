@@ -1,0 +1,54 @@
+{
+  "resource_pack_name": "RP_BB",
+  "texture_name": "atlas.terrain",
+  "padding": 16,
+  "num_mip_levels": 4,
+  "texture_data": {
+    "glass": {
+      "textures": "textures/blocks/glass"
+    },
+    "glass_pane_top": {
+      "textures": "textures/blocks/glass_pane_top"
+    },
+    "leaves": {
+      "textures": [
+        "textures/blocks/leaves_oak",
+        "textures/blocks/leaves_spruce",
+        "textures/blocks/leaves_birch",
+        "textures/blocks/leaves_jungle",
+        "textures/blocks/leaves_oak_opaque",
+        "textures/blocks/leaves_spruce_opaque",
+        "textures/blocks/leaves_birch_opaque",
+        "textures/blocks/leaves_jungle_opaque"
+      ]
+    },
+    "leaves_carried": {
+      "textures": [
+        "textures/blocks/leaves_oak_carried",
+        "textures/blocks/leaves_spruce_carried",
+        "textures/blocks/leaves_birch_carried",
+        "textures/blocks/leaves_jungle_carried",
+        "textures/blocks/leaves_oak_carried",
+        "textures/blocks/leaves_spruce_carried",
+        "textures/blocks/leaves_birch_carried",
+        "textures/blocks/leaves_jungle_carried"
+      ]
+    },
+    "leaves2": {
+      "textures": [
+        "textures/blocks/leaves_acacia",
+        "textures/blocks/leaves_big_oak",
+        "textures/blocks/leaves_acacia_opaque",
+        "textures/blocks/leaves_big_oak_opaque"
+      ]
+    },
+    "leaves_carried2": {
+      "textures": [
+        "textures/blocks/leaves_acacia_carried",
+        "textures/blocks/leaves_big_oak_carried",
+        "textures/blocks/leaves_acacia_carried",
+        "textures/blocks/leaves_big_oak_carried"
+      ]
+	}
+  }
+}

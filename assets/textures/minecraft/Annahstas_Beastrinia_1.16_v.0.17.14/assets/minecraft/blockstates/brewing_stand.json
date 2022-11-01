@@ -1,0 +1,14 @@
+{
+    "multipart": [
+        {   "apply": { "model": "block/brewing_stand" }},
+        {   "when": { "has_bottle_0": "true" },
+            "apply": { "model": "block/brewing_stand_bottle0" }
+        },
+        {   "when": { "has_bottle_1": "true" },
+            "apply": { "model": "block/brewing_stand_bottle1" }
+        },
+        {   "when": { "has_bottle_2": "true" },
+            "apply": { "model": "block/brewing_stand_bottle2" }
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"parent": "block/block",
+	"textures": {
+		"particle": "block/jungle_fence",
+		"texture": "block/jungle_fence"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "Box1",
+			"from": [ 6.25, 0, 6.25 ],
+			"to": [ 9.75, 16, 9.75 ],
+			"faces": {
+				"down": { "uv": [ 3.5, 3.5, 7.5, 7.5 ], "texture": "#texture" },
+				"up": { "uv": [ 9.5, 0, 13.5, 4 ], "texture": "#texture" },
+				"north": { "uv": [ 3, 3.499998, 8, 16 ], "texture": "#texture" },
+				"south": { "uv": [ 3, 3.499999, 8, 16 ], "texture": "#texture" },
+				"west": { "uv": [ 3, 3.499999, 8, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 3, 3.5, 8, 16 ], "texture": "#texture" }
+			}
+		}
+	]
+}

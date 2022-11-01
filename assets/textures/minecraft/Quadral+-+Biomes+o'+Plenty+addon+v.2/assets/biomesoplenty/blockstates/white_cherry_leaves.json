@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "": [
+			{ "model": "biomesoplenty:block/white_cherry_leaves" },
+			{ "model": "biomesoplenty:block/white_cherry_leaves_1" },
+			{ "model": "biomesoplenty:block/white_cherry_leaves_2" }
+		
+		]
+    }
+}

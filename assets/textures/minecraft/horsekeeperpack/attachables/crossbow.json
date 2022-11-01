@@ -1,0 +1,44 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:attachable": {
+		"description": {
+			"animations": {
+			  "bow_first_person": "controller.animation.bow.first_person",
+				"bow_third_person": "controller.animation.bow.third_person",
+				"crossbow_first_person_charging": "controller.animation.crossbow_charging",
+				"crossbow_first_person_charged": "controller.animation.crossbow_charged",
+				"crossbow_first_person_sprint": "controller.animation.crossbow_sprint",
+				"crossbow_first_person_shoot": "controller.animation.crossbow_shoot",
+				"crossbow_first_person_not_sprint": "controller.animation.crossbow_not_sptint",
+				"wield": "animation.bow.wield",
+				"thirdperson_main_hand": "animation.bow.wield_third_person", "wield_first_person_charging": "animation.crossbow.charging", "wield_first_person_crossbow_shoot": "animation.crossbow.shoot", "wield_first_person_crossbow.sprint": "animation.crossbow.sprint", "wield_first_person_crossbow.not.sprint": "animation.crossbow.not.sprint", "wield_first_person_charged": "animation.crossbow.charged"
+			},
+			"geometry": {
+				"default": "geometry.crossbow"
+			},
+			"sound_effects": {
+                "shotgun.break": "shotgun.break",
+                "shotgun.shells": "shotgun.shells",
+                "shotgun.hammer": "shotgun.hammer"
+            },
+			"identifier": "minecraft:crossbow",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"render_controllers": ["controller.render.default"],
+			"scripts": {
+				"animate": [  "bow_first_person", 
+				"bow_third_person", 
+				"crossbow_first_person_charging",
+				"crossbow_first_person_shoot",
+				"crossbow_first_person_sprint",
+				"crossbow_first_person_not_sprint",
+				"crossbow_first_person_charged"
+				]
+			},
+			"textures": {
+				  "default": "textures/entity/crossbow_standby"
+			}
+		}
+	}
+}

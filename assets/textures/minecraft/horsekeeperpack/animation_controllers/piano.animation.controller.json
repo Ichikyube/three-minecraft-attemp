@@ -1,0 +1,231 @@
+{
+	"format_version" : "1.10.0",
+	"animation_controllers" : {
+		"controller.animation.piano_chord" : {
+			"initial_state" : "piano_silent",
+			"states" : {
+				"piano_echord" : {
+					"animations" : [ "piano_echord" ],
+					"blend_transition" : 0.1,
+					"blend_via_shortest_path" : true,
+					"transitions" : [
+						{
+							"piano_cchord" : "variable.armor_stand.pose_index == 1 && query.get_name == 'piano'"
+						},
+						{
+							"piano_dchord" : "variable.armor_stand.pose_index == 2 && query.get_name == 'piano'"
+						},
+						{
+							"piano_fchord" : "variable.armor_stand.pose_index == 4 && query.get_name == 'piano'"
+						},
+						{
+							"piano_silent" : "variable.armor_stand.pose_index == 0 && query.get_name == 'piano'"
+						},
+						{
+							"piano_gchord" : "variable.armor_stand.pose_index == 5 && query.get_name == 'piano'"
+						},
+						{
+							"piano_achord" : "variable.armor_stand.pose_index == 6 && query.get_name == 'piano'"
+						},
+						{
+							"piano_bchord" : "variable.armor_stand.pose_index == 7 && query.get_name == 'piano'"
+						}
+					]
+				},
+				"piano_silent" : {
+					"animations" : [ "piano_silent" ],
+					"blend_transition" : 0.1,
+					"blend_via_shortest_path" : true,
+					"transitions" : [
+						{
+							"piano_cchord" : "variable.armor_stand.pose_index == 1 && query.get_name == 'piano'"
+						},
+						{
+							"piano_dchord" : "variable.armor_stand.pose_index == 2 && query.get_name == 'piano'"
+						},
+						{
+							"piano_fchord" : "variable.armor_stand.pose_index == 4 && query.get_name == 'piano'"
+						},
+						{
+							"piano_gchord" : "variable.armor_stand.pose_index == 5 && query.get_name == 'piano'"
+						},
+						{
+							"piano_achord" : "variable.armor_stand.pose_index == 6 && query.get_name == 'piano'"
+						},
+						{
+							"piano_bchord" : "variable.armor_stand.pose_index == 7 && query.get_name == 'piano'"
+						}
+					]
+				},
+				"piano_fchord" : {
+					"animations" : [ "piano_fchord" ],
+					"blend_transition" : 0.1,
+					"blend_via_shortest_path" : true,
+					"transitions" : [
+						{
+							"piano_cchord" : "variable.armor_stand.pose_index == 1 && query.get_name == 'piano'"
+						},
+						{
+							"piano_silent" : "variable.armor_stand.pose_index == 0 && query.get_name == 'piano'"
+						},
+						{
+							"piano_dchord" : "variable.armor_stand.pose_index == 2 && query.get_name == 'piano'"
+						},
+						{
+							"piano_echord" : "variable.armor_stand.pose_index == 3 && query.get_name == 'piano'"
+						},
+						{
+							"piano_gchord" : "variable.armor_stand.pose_index == 5 && query.get_name == 'piano'"
+						},
+						{
+							"piano_achord" : "variable.armor_stand.pose_index == 6 && query.get_name == 'piano'"
+						},
+						{
+							"piano_bchord" : "variable.armor_stand.pose_index == 7 && query.get_name == 'piano'"
+						}
+					]
+				},
+				"piano_achord" : {
+					"animations" : [ "piano_achord" ],
+					"blend_transition" : 0.1,
+					"blend_via_shortest_path" : true,
+					"transitions" : [
+						{
+							"piano_cchord" : "variable.armor_stand.pose_index == 1 && query.get_name == 'piano'"
+						},
+						{
+							"piano_dchord" : "variable.armor_stand.pose_index == 2 && query.get_name == 'piano'"
+						},
+						{
+							"piano_silent" : "variable.armor_stand.pose_index == 0 && query.get_name == 'piano'"
+						},
+						{
+							"piano_echord" : "variable.armor_stand.pose_index == 3 && query.get_name == 'piano'"
+						},
+						{
+							"piano.fchord" : "variable.armor_stand.pose_index == 4 && query.get_name == 'piano'"
+						},
+						{
+							"piano_gchord" : "variable.armor_stand.pose_index == 5 && query.get_name == 'piano'"
+						},
+						{
+							"piano_bchord" : "variable.armor_stand.pose_index == 7 && query.get_name == 'piano'"
+						}
+					]
+				},
+				"piano_gchord" : {
+					"animations" : [ "piano_gchord" ],
+					"blend_transition" : 0.1,
+					"blend_via_shortest_path" : true,
+					"transitions" : [
+						{
+							"piano_cchord" : "variable.armor_stand.pose_index == 1 && query.get_name == 'piano'"
+						},
+						{
+							"piano_dchord" : "variable.armor_stand.pose_index == 2 && query.get_name == 'piano'"
+						},
+						{
+							"piano_silent" : "variable.armor_stand.pose_index == 0 && query.get_name == 'piano'"
+						},
+						{
+							"piano_echord" : "variable.armor_stand.pose_index == 3 && query.get_name == 'piano'"
+						},
+						{
+							"piano_fchord" : "variable.armor_stand.pose_index == 4 && query.get_name == 'piano'"
+						},
+						{
+							"piano_achord" : "variable.armor_stand.pose_index == 6 && query.get_name == 'piano'"
+						},
+						{
+							"piano_bchord" : "variable.armor_stand.pose_index == 7 && query.get_name == 'piano'"
+						}
+					]
+				},
+				"piano_cchord" : {
+					"animations" : [ "piano_cchord" ],
+					"blend_transition" : 0.1,
+					"blend_via_shortest_path" : true,
+					"transitions" : [
+						{
+							"piano_dchord" : "variable.armor_stand.pose_index == 2 && query.get_name == 'piano'"
+						},
+						{
+							"piano_echord" : "variable.armor_stand.pose_index == 3 && query.get_name == 'piano'"
+						},
+						{
+							"piano_silent" : "variable.armor_stand.pose_index == 0 && query.get_name == 'piano'"
+						},
+						{
+							"piano_fchord" : "variable.armor_stand.pose_index == 4 && query.get_name == 'piano'"
+						},
+						{
+							"piano_gchord" : "variable.armor_stand.pose_index == 5 && query.get_name == 'piano'"
+						},
+						{
+							"piano_achord" : "variable.armor_stand.pose_index == 6 && query.get_name == 'piano'"
+						},
+						{
+							"piano_bchord" : "variable.armor_stand.pose_index == 7 && query.get_name == 'piano'"
+						}
+					]
+				},
+				"piano_bchord" : {
+					"animations" : [ "piano_bchord" ],
+					"blend_transition" : 0.1,
+					"blend_via_shortest_path" : true,
+					"transitions" : [
+						{
+							"piano_cchord" : "variable.armor_stand.pose_index == 1 && query.get_name == 'piano'"
+						},
+						{
+							"piano_dchord" : "variable.armor_stand.pose_index == 2 && query.get_name == 'piano'"
+						},
+						{
+							"piano_echord" : "variable.armor_stand.pose_index == 3 && query.get_name == 'piano'"
+						},
+						{
+							"piano_silent" : "variable.armor_stand.pose_index == 0 && query.get_name == 'piano'"
+						},
+						{
+							"piano_fchord" : "variable.armor_stand.pose_index == 4 && query.get_name == 'piano'"
+						},
+						{
+							"piano_gchord" : "variable.armor_stand.pose_index == 5 && query.get_name == 'piano'"
+						},
+						{
+							"piano_achord" : "variable.armor_stand.pose_index == 6 && query.get_name == 'piano'"
+						}
+					]
+				},
+				"piano_dchord" : {
+					"animations" : [ "piano_dchord" ],
+					"blend_transition" : 0.1,
+					"blend_via_shortest_path" : true,
+					"transitions" : [
+						{
+							"piano_cchord" : "variable.armor_stand.pose_index == 1 && query.get_name == 'piano'"
+						},
+						{
+							"piano_echord" : "variable.armor_stand.pose_index == 3 && query.get_name == 'piano'"
+						},
+						{
+							"piano_silent" : "variable.armor_stand.pose_index == 0 && query.get_name == 'piano'"
+						},
+						{
+							"piano_fchord" : "variable.armor_stand.pose_index == 4 && query.get_name == 'piano'"
+						},
+						{
+							"piano_gchord" : "variable.armor_stand.pose_index == 5 && query.get_name == 'piano'"
+						},
+						{
+							"piano_achord" : "variable.armor_stand.pose_index == 6 && query.get_name == 'piano'"
+						},
+						{
+							"piano_bchord" : "variable.armor_stand.pose_index == 7 && query.get_name == 'piano'"
+						}
+					]
+				}
+			}
+		}
+	}
+}

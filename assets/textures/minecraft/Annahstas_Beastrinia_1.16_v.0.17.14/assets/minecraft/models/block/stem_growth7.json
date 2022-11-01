@@ -1,0 +1,44 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "#stem"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "cross1",
+			"from": [ -11.0563, 0, 11.5 ],
+			"to": [ 20.9437, 32, 11.501 ],
+			"rotation": { "origin": [ 4.5, 9, 11.5 ], "axis": "y", "angle": 45 },
+			"shade": false,
+			"faces": {
+				"north": { "uv": [ 16, 0, 0, 16 ], "texture": "#stem2" },
+				"south": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem2" }
+			}
+		},
+		{
+			"__comment": "cross2",
+			"from": [ 4.5, 0, -4.7635 ],
+			"to": [ 4.501, 32, 27.2365 ],
+			"rotation": { "origin": [ 4.5, 9, 11.5 ], "axis": "y", "angle": 45 },
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem" },
+				"east": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem" }
+			}
+		},
+		{
+			"__comment": "pumpkin",
+			"from": [ 5.5, 0, 1.5 ],
+			"to": [ 14.5, 9, 10.5 ],
+			"faces": {
+				"down": { "uv": [ 7, 6, 16, 15 ], "texture": "#bottom" },
+				"up": { "uv": [ 7, 6, 16, 15 ], "texture": "#top" },
+				"north": { "uv": [ 7, 6, 16, 15 ], "texture": "#side" },
+				"south": { "uv": [ 7, 6, 16, 15 ], "texture": "#side" },
+				"west": { "uv": [ 7, 6, 16, 15 ], "texture": "#side" },
+				"east": { "uv": [ 7, 6, 16, 15 ], "texture": "#side" }
+			}
+		}
+	]
+}

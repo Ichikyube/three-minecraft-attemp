@@ -1,0 +1,8 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"parent": "block/nether_wart_crop",
+	"textures": {
+		"particle": "block/nether_wart_stage2",
+		"texture": "block/nether_wart_stage2"
+	}
+}

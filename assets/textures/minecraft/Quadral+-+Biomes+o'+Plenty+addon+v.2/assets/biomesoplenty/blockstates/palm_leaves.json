@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "": [
+			{ "model": "biomesoplenty:block/palm_leaves" },
+			{ "model": "biomesoplenty:block/palm_leaves_1" },
+			{ "model": "biomesoplenty:block/palm_leaves_2" },
+			{ "model": "biomesoplenty:block/palm_leaves_3" }
+		
+		]
+    }
+}

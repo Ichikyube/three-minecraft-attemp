@@ -1,0 +1,58 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.waterwheel",
+				"texture_width": 256,
+				"texture_height": 256,
+				"visible_bounds_width": 6,
+				"visible_bounds_height": 5,
+				"visible_bounds_offset": [0, 0.5, 0]
+			},
+			"bones": [
+				{
+					"name": "Waterwheel",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-17, 4, -3], "size": [41, 6, 6], "uv": [84, 0]},
+						{"origin": [-9, 1, -6], "size": [0, 12, 12], "uv": [6, 93]},
+						{"origin": [10, 1, -6], "size": [0, 12, 12], "uv": [6, 93]}
+					],
+					"locators": {
+						"waterwheel": [1, 12, -25]
+					}
+				},
+				{
+					"name": "Wheel",
+					"parent": "Waterwheel",
+					"pivot": [0, 7, 0],
+					"cubes": [
+						{"origin": [-8, -17, -23], "size": [17, 48, 48], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "bone",
+					"parent": "Wheel",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "paddles",
+					"parent": "Wheel",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "paddle0",
+					"parent": "paddles",
+					"pivot": [0.5, 6.43173, -0.24923],
+					"cubes": [
+						{"origin": [-8.5, -26.14279, -2.30945], "size": [18, 65, 3], "pivot": [0, 6, 0], "rotation": [-45, 0, 0], "uv": [178, 0]},
+						{"origin": [-8.5, -26, -2], "size": [18, 65, 3], "uv": [178, 0]},
+						{"origin": [-8.5, 5, -32], "size": [18, 3, 65], "uv": [90, 121]},
+						{"origin": [-8.5, -5, -37], "size": [18, 3, 65], "pivot": [0, -5, 11], "rotation": [-45, 0, 0], "uv": [90, 121]}
+					]
+				}
+			]
+		}
+	]
+}

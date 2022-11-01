@@ -1,0 +1,43 @@
+{
+	"__comment": "By Filmjolk for Annahstas Beastrinia",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "block/attached_melon_stem",
+		"stem": "block/attached_melon_stem",
+		"stem_bottom": "block/attached_melon_stem_bottom"
+	},
+	"elements": [ 	 
+		{
+			"__comment": "cross1",
+			"from": [ 0, 0, 8 ],
+			"to": [ 16, 16, 8.001 ],
+			"rotation": { "origin": [ 8, 9, 8 ], "axis": "y", "angle": 45, "rescale": false },
+			"shade": false,
+			"faces": {
+				"north": { "uv": [ 16, 0, 0, 16 ], "texture": "#stem_bottom" },
+				"south": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem_bottom" }
+			}
+		},
+		{
+			"__comment": "cross2",
+			"from": [ 8, 0, 0 ],
+			"to": [ 8.001, 16, 16 ],
+			"rotation": { "origin": [ 8, 9, 8 ], "axis": "y", "angle": 45, "rescale": false },
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem_bottom" },
+				"east": { "uv": [ 16, 0, 0, 16 ], "texture": "#stem_bottom" }
+			}
+		},
+		{
+			"__comment": "Element",
+			"from": [ -16, 0, 8 ],
+			"to": [ 16, 32, 8.001 ],
+			"shade": false,
+			"faces": {
+				"north": { "uv": [ 16, 0, 0, 16 ], "texture": "#stem" },
+				"south": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem" }
+			}
+		}
+	]
+}

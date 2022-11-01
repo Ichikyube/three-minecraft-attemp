@@ -1,0 +1,33 @@
+{
+	"format_version": "1.16.0",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "minecraft:milk_bucket",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/milk"
+			},
+			"geometry": {
+				"default": "geometry.whisky"
+			},
+			"animations": {
+			"bow_first_person": "controller.animation.bow.first_person",
+				"bow_third_person": "controller.animation.bow.third_person",
+				"whisky_drink": "controller.animation.whisky.drink",
+				"wield": "animation.bow.wield",
+				"whisky": "animation.whisky.drink",
+				"thirdperson_main_hand": "animation.bow.wield_third_person"
+			},
+			"scripts": {
+				"animate": [
+				"bow_first_person",
+				"bow_third_person",
+				"whisky_drink"
+				]
+			},
+			"render_controllers": ["controller.render.default"]
+		}
+	}
+}

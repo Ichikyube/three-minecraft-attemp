@@ -1,0 +1,49 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "#crop"
+	},
+	"elements": [ 	 
+		{
+			"from": [ 10.75, 0, 7.75 ],
+			"to": [ 10.751, 14, 21.25 ],
+			"rotation": { "origin": [ 10.75, 0, 7.75 ], "axis": "y", "angle": -45 },
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#crop" },
+				"east": { "uv": [ 0, 0, 16, 16 ], "texture": "#crop" }
+			}
+		},
+		{
+			"from": [ 11.5, 0, -1 ],
+			"to": [ 11.501, 14, 12.5 ],
+			"rotation": { "origin": [ 11.5, 0, -1 ], "axis": "y", "angle": -45 },
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#crop" },
+				"east": { "uv": [ 0, 0, 16, 16 ], "texture": "#crop" }
+			}
+		},
+		{
+			"from": [ 2.5, 0, -1.25 ],
+			"to": [ 2.501, 14, 12.25 ],
+			"rotation": { "origin": [ 2.5, 0, -1.25 ], "axis": "y", "angle": 45 },
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#crop" },
+				"east": { "uv": [ 0, 0, 16, 16 ], "texture": "#crop" }
+			}
+		},
+		{
+			"from": [ 1.875, 0, 7.125 ],
+			"to": [ 1.876, 14, 20.625 ],
+			"rotation": { "origin": [ 1.875, 0, 7.125 ], "axis": "y", "angle": 45 },
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#crop" },
+				"east": { "uv": [ 0, 0, 16, 16 ], "texture": "#crop" }
+			}
+		}
+	]
+}

@@ -1,0 +1,43 @@
+{
+    "ambientocclusion": false,
+    "textures": {
+        "particle": "#stem"
+    },
+	"elements": [
+		{
+			"__comment": "cross1",
+			"from": [ -9.875, 0, 9.875 ],
+			"to": [ 22.125, 32, 9.876 ],
+			"rotation": { "origin": [ 6.125, 9, 9.875 ], "axis": "y", "angle": 45 },
+			"shade": false,
+			"faces": {
+				"north": { "uv": [ 16, 0, 0, 16 ], "texture": "#stem2" },
+				"south": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem2" }
+			}
+		},
+		{
+			"__comment": "cross2",
+			"from": [ 6.125, 0, -7.875 ],
+			"to": [ 6.126, 32, 25.875 ],
+			"rotation": { "origin": [ 6.125, 9, 9.875 ], "axis": "y", "angle": 45 },
+			"shade": false,
+			"faces": {
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#stem" },
+				"east": { "uv": [ 16, 0, 0, 16 ], "texture": "#stem" }
+			}
+		},
+		{
+			"__comment": "pumpkin",
+			"from": [ 7.5, 0, 1.5 ],
+			"to": [ 14.5, 7, 8.5 ],
+			"faces": {
+				"down": { "uv": [ 0, 6, 7, 13 ], "texture": "#bottom" },
+				"up": { "uv": [ 0, 6, 7, 13 ], "texture": "#top" },
+				"north": { "uv": [ 0, 6, 7, 13 ], "texture": "#side" },
+				"south": { "uv": [ 0, 6, 7, 13 ], "texture": "#side" },
+				"west": { "uv": [ 0, 6, 7, 13 ], "texture": "#side" },
+				"east": { "uv": [ 0, 6, 7, 13 ], "texture": "#side" }
+			}
+		}
+	]
+}

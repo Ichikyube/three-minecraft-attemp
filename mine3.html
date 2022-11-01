@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="info">
+    </div>
+    <div id="scene_explorer" hidden>
+        <a id="plus_exp" href="#">[+]</a>
+        <div id="section_exp"></div>
+    </div>
+    <div id="progress">
+        <span id="message">Loading ...</span>
+        <center>
+            <div id="loading-bar" class="shadow">
+                <div id="bar" class="shadow"></div>
+            </div>
+            <div id="start" class="disabled">Start</div>
+            <canvas class="webgl"></canvas>
+
+            <div class="point point-0">
+                <div class="label">1</div>
+                <div class="text">Lorem ipsum, dolor sit amet consectetur adipisicing elit</div>
+            </div>
+        </center>
+    </div>
+    <div id="blocker">
+        <div id="instructions">
+            <span style="font-size:40px">Click to play</span>
+            <br />
+            (W,A,S,D = Move, SPACE = Jump, MOUSE = Look, CLICK+HOLD = Shoot)
+        </div>
+
+    </div>
+
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./assets/js/three.module.js",
+                "vendor/": "./assets/vendor/",
+                "addons/": "./assets/jsm/",
+                "parts/": "./Components/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import * as BufferGeometryUtils from 'addons/utils/BufferGeometryUtils.js';
+        import {
+            GUI
+        } from 'vendor/gui/dat.gui.module.js';
+        import {
+            SSAOPass
+        } from 'addons/postprocessing/SSAOPass.js';
+        import {
+            ShaderPass
+        } from 'addons/postprocessing/ShaderPass.js';
+        import {
+            RenderPass
+        } from 'addons/postprocessing/RenderPass.js';
+        import {
+            EffectComposer
+        } from 'addons/postprocessing/EffectComposer.js';
+        import {
+            FXAAShader
+        } from 'addons/shaders/FXAAShader.js';
+        import {
+            CopyShader
+        } from 'addons/shaders/CopyShader.js';
+        import {
+            OrbitControls
+        } from 'addons/controls/OrbitControls.js';
+        import {
+            RectAreaLightHelper
+        } from 'addons/helpers/RectAreaLightHelper.js';
+        import {
+            RectAreaLightUniformsLib
+        } from 'addons/lights/RectAreaLightUniformsLib.js';
+        //if (!Detector.webgl) Detector.addGetWebGLMessage();
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        let pointclouds;
+        let raycaster;
+        let intersection = null;
+        let spheresIndex = 0;
+        let clock;
+        let toggle = 0;
+        let fire = false;
+        const pointer = new THREE.Vector2();
+        const spheres = [];
+        const materials = [];
+        const threshold = 0.1;
+        const pointSize = 0.05;
+        const widthP = 80;
+        const length = 160;
+        let size = 10;
+        const divisions = 10;
+        class VoxelWorld {
+            constructor(cellSize) {
+                this.cellSize = cellSize;
+                this.cell = new Uint8Array(cellSize * cellSize * cellSize);
+            }
+            getCellForVoxel(x, y, z) {
+                const {
+                    cellSize
+                } = this;
+                const cellX = Math.floor(x / cellSize);
+                const cellY = Math.floor(y / cellSize);
+                const cellZ = Math.floor(z / cellSize);
+                if (cellX !== 0 || cellY !== 0 || cellZ !== 0) {
+                    return null
+                }
+                return this.cell;
+            }
+            setVoxel(x, y, z, v) {
+                let cell = this.getCellForVoxel(x, y, z);
+                if (!cell) {
+                    return; // TODO: add a new cell?
+                }
+                const {
+                    cellSize
+                } = this;
+                const voxelX = THREE.MathUtils.euclideanModulo(x, cellSize) | 0;
+                const voxelY = THREE.MathUtils.euclideanModulo(y, cellSize) | 0;
+                const voxelZ = THREE.MathUtils.euclideanModulo(z, cellSize) | 0;
+                const voxelOffset = voxelY * cellSize * cellSize +
+                    voxelZ * cellSize +
+                    voxelX;
+                cell[voxelOffset] = v;
+            }
+            getVoxel(x, y, z) {
+                const cell = this.getCellForVoxel(x, y, z);
+                if (!cell) {
+                    return 0;
+                }
+                const {
+                    cellSize
+                } = this;
+                const voxelX = THREE.MathUtils.euclideanModulo(x, cellSize) | 0;
+                const voxelY = THREE.MathUtils.euclideanModulo(y, cellSize) | 0;
+                const voxelZ = THREE.MathUtils.euclideanModulo(z, cellSize) | 0;
+                const voxelOffset = voxelY * cellSize * cellSize +
+                    voxelZ * cellSize +
+                    voxelX;
+                return cell[voxelOffset];
+            }
+            generateGeometryDataForCell(cellX, cellY, cellZ) {
+                const {
+                    cellSize
+                } = this;
+                const positions = [];
+                const normals = [];
+                const indices = [];
+                const startX = cellX * cellSize;
+                const startY = cellY * cellSize;
+                const startZ = cellZ * cellSize;
+
+                for (let y = 0; y < cellSize; ++y) {
+                    const voxelY = startY + y;
+                    for (let z = 0; z < cellSize; ++z) {
+                        const voxelZ = startZ + z;
+                        for (let x = 0; x < cellSize; ++x) {
+                            const voxelX = startX + x;
+                            const voxel = this.getVoxel(voxelX, voxelY, voxelZ);
+                            if (voxel) {
+                                for (const {
+                                        dir
+                                    } of VoxelWorld.faces) {
+                                    for (const {
+                                            dir,
+                                            corners
+                                        } of VoxelWorld.faces) {
+                                        const neighbor = this.getVoxel(
+                                            voxelX + dir[0],
+                                            voxelY + dir[1],
+                                            voxelZ + dir[2]);
+                                        if (!neighbor) {
+                                            // this voxel has no neighbor in this direction so we need a face
+                                            // here.
+                                            const ndx = positions.length / 3;
+                                            for (const pos of corners) {
+                                                positions.push(pos[0] + x, pos[1] + y, pos[2] + z);
+                                                normals.push(...dir);
+                                            }
+                                            indices.push(
+                                                ndx, ndx + 1, ndx + 2,
+                                                ndx + 2, ndx + 1, ndx + 3,
+                                            );
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                return {
+                    positions,
+                    normals,
+                    indices,
+                }
+            }
+        }
+        VoxelWorld.faces = [{ // left
+                dir: [-1, 0, 0, ],
+                corners: [
+                    [0, 1, 0],
+                    [0, 0, 0],
+                    [0, 1, 1],
+                    [0, 0, 1],
+                ],
+            },
+            { // right
+                dir: [1, 0, 0, ],
+                corners: [
+                    [1, 1, 1],
+                    [1, 0, 1],
+                    [1, 1, 0],
+                    [1, 0, 0],
+                ],
+            },
+            { // bottom
+                dir: [0, -1, 0, ],
+                corners: [
+                    [1, 0, 1],
+                    [0, 0, 1],
+                    [1, 0, 0],
+                    [0, 0, 0],
+                ],
+            },
+            { // top
+                dir: [0, 1, 0, ],
+                corners: [
+                    [0, 1, 1],
+                    [1, 1, 1],
+                    [0, 1, 0],
+                    [1, 1, 0],
+                ],
+            },
+            { // back
+                dir: [0, 0, -1, ],
+                corners: [
+                    [1, 0, 0],
+                    [0, 0, 0],
+                    [1, 1, 0],
+                    [0, 1, 0],
+                ],
+            },
+            { // front
+                dir: [0, 0, 1, ],
+                corners: [
+                    [0, 0, 1],
+                    [1, 0, 1],
+                    [0, 1, 1],
+                    [1, 1, 1],
+                ],
+            },
+        ];
+
+        function init() {
+            // create a scene, that will hold all our elements such as objects, cameras and lights.
+            let scene = new THREE.Scene();
+            // create a render and set the size
+            const sizes = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }
+            let renderer = new THREE.WebGLRenderer();
+            renderer.setSize(sizes.width, sizes.height);
+            // add the output of the render function to the HTML
+            document.body.appendChild(renderer.domElement);
+            // create a camera, which defines where we're looking at
+            let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+            let camcontrols = new OrbitControls(camera, renderer.domElement);
+            camera.position.set(0, 20, 10);
+            camcontrols.update();
+            let Light = new THREE.AmbientLight('white', 0.35);
+            scene.add(Light);
+            const raycaster = new THREE.Raycaster();
+            raycaster.params.Points.threshold = 0.8;
+            const pointer = new THREE.Vector2();
+            var callbackProgress = function (progress, result) {
+
+                var bar = 250,
+                    total = progress.total_models + progress.total_textures,
+                    loaded = progress.loaded_models + progress.loaded_textures;
+
+                if (total)
+                    bar = Math.floor(bar * loaded / total);
+
+                $("bar").style.width = bar + "px";
+
+                count = 0;
+                for (var m in result.materials) count++;
+
+                handle_update(result, Math.floor(count / total));
+
+            }
+
+            var callbackFinished = function (result) {
+
+                console.log(result.scene)
+
+                //yes this works!!
+            }
+            RectAreaLightUniformsLib.init();
+
+            const rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10);
+            rectLight1.position.set(-5, 5, 5);
+            scene.add(rectLight1);
+
+            const rectLight2 = new THREE.RectAreaLight(0x00ff00, 5, 4, 10);
+            rectLight2.position.set(0, 5, 5);
+            scene.add(rectLight2);
+
+            const rectLight3 = new THREE.RectAreaLight(0x0000ff, 5, 4, 10);
+            rectLight3.position.set(5, 5, 5);
+            scene.add(rectLight3);
+
+            scene.add(new RectAreaLightHelper(rectLight1));
+            scene.add(new RectAreaLightHelper(rectLight2));
+            scene.add(new RectAreaLightHelper(rectLight3));
+
+            const geoKnot = new THREE.TorusKnotGeometry(1.5, 0.5, 200, 16);
+            const matKnot = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                roughness: 0,
+                metalness: 0
+            });
+            const meshKnot = new THREE.Mesh(geoKnot, matKnot);
+            meshKnot.name = 'meshKnot';
+            meshKnot.position.set(0, 5, 0);
+            scene.add(meshKnot);
+
+            let s = 1;
+            let d = 0.5;
+            const geometries = [];
+            let leftFace = new THREE.PlaneGeometry(s, s);
+            console.log(leftFace.attributes.uv);
+            leftFace.rotateY(-Math.PI / 2);
+            leftFace.translate(-d, 0, 0); //geometries.push(leftFace);
+            let rightFace = new THREE.PlaneGeometry(s, s);
+            rightFace.rotateY(Math.PI / 2);
+            rightFace.translate(d, 0, 0); //geometries.push(rightFace);
+            console.log(rightFace.attributes.uv);
+            let backFace = new THREE.PlaneGeometry(s, s);
+            backFace.rotateY(-Math.PI);
+            backFace.translate(0, 0, -d); //geometries.push(backFace);
+            let frontFace = new THREE.PlaneGeometry(s, s);
+            //frontFace.rotateY(Math.PI);
+            frontFace.translate(0, 0, d); //geometries.push(frontFace);
+            let topFace = new THREE.PlaneGeometry(s, s);
+            topFace.rotateX(-Math.PI / 2);
+            topFace.translate(0, d, 0); //geometries.push(topFace);
+            let bottomFace = new THREE.PlaneGeometry(s, s);
+            bottomFace.rotateX(Math.PI / 2);
+            bottomFace.translate(0, -d, 0); //geometries.push(bottomFace);
+
+            let worldS = 50;
+            const world = new Uint8Array(worldS * worldS * worldS);
+            const matrix = new THREE.Matrix4();
+            for (let y = 0; y < worldS; y++) {
+                for (let z = 0; z < worldS; z++) {
+                    for (let x = 0; x < worldS; x++) {
+                        const height = (Math.sin(x / worldS * Math.PI * 5.5) + Math.sin(z / worldS * Math.PI *
+                                5.5)) *
+                            2 + worldS / 2;
+                        if (height > y && height < y + 1) {
+                            const offset = y * worldS * worldS +
+                                z * worldS +
+                                x;
+                            world[offset] = 1;
+                        }
+                    }
+                }
+            }
+            for (let y = 0; y < worldS; y++) {
+                for (let z = 0; z < worldS; z++) {
+                    for (let x = 0; x < worldS; x++) {
+
+                        const offset = y * worldS * worldS +
+                            z * worldS +
+                            x;
+                        const block = world[offset];
+                        if (block) {
+                            matrix.makeTranslation(x - worldS / 2, y - worldS / 2, z - worldS / 2);
+                            geometries.push(leftFace.clone().applyMatrix4(matrix));
+                            geometries.push(rightFace.clone().applyMatrix4(matrix));
+                            geometries.push(topFace.clone().applyMatrix4(matrix));
+                            geometries.push(bottomFace.clone().applyMatrix4(matrix));
+                            geometries.push(frontFace.clone().applyMatrix4(matrix));
+                            geometries.push(backFace.clone().applyMatrix4(matrix));
+                        }
+                    }
+                }
+            }
+            const texture = new THREE.TextureLoader().load('../assets/textures/minecraft/atlas.png');
+            texture.magFilter = THREE.NearestFilter;
+            const geometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
+            geometry.computeBoundingSphere();
+            let material = new THREE.MeshStandardMaterial({
+                //map: texture,
+                color: 0x808080,
+                roughness: 0.1,
+                metalness: 0
+            });
+            let materialMesh = new THREE.Mesh(
+                geometry,
+                material
+            )
+            scene.add(materialMesh)
+
+            //
+            const sphereGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+            const sphereMaterial = new THREE.MeshStandardMaterial();
+
+            for (let i = 0; i < 40; i++) {
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                scene.add(sphere);
+                spheres.push(sphere);
+            }
+            let clock = new THREE.Clock();
+            // function for re-rendering/animating the scene
+            let composer = new EffectComposer(renderer);
+            composer.setSize(renderer.domElement.width, renderer.domElement.height);
+            const renderPass = new RenderPass(scene, camera);
+            composer.addPass(renderPass);
+            const ssaoPass = new SSAOPass(scene, camera, width, height);
+            ssaoPass.kernelRadius = 8;
+            ssaoPass.minDistance = 0.005;
+            ssaoPass.maxDistance = 0.01;
+            composer.addPass(ssaoPass);
+            const fxaaPass = new ShaderPass(FXAAShader);
+            const pixelRatio = renderer.getPixelRatio();
+            fxaaPass.material.uniforms['resolution'].value.x = 1 / (document.body.offsetWidth * pixelRatio);
+            fxaaPass.material.uniforms['resolution'].value.y = 1 / (document.body.offsetHeight * pixelRatio);
+            composer.addPass(fxaaPass);
+            const CopyPass = new ShaderPass(CopyShader);
+            CopyPass.renderToScreen = true;
+            composer.addPass(CopyPass);
+
+            function onPointerMove(event) {
+                pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+                pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            }
+
+            function onKeyDown(event) {
+                if (event.code === 'Space') fire = true;
+            }
+
+            function onKeyUp(event) {
+                fire = false;
+            }
+            document.addEventListener('pointermove', onPointerMove);
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
+            //document.addEventListener( 'mousedown', onMouseDown );
+            //document.addEventListener( 'mouseup', onMouseUp );
+            function tick() {
+                var time = Date.now() * 0.00005;
+                camcontrols.update();
+                raycaster.setFromCamera(pointer, camera);
+
+                const intersections = raycaster.intersectObjects(scene.children, false);
+                let intersection = (intersections.length) > 0 ? intersections[0] : null;
+
+                if (toggle > 0.02 && intersection !== null && fire) {
+
+                    spheres[spheresIndex].position.copy(intersection.point);
+                    spheres[spheresIndex].scale.set(1, 1, 1);
+                    spheresIndex = (spheresIndex + 1) % spheres.length;
+
+                    toggle = 0;
+
+                }
+                for (let i = 0; i < spheres.length; i++) {
+
+                    const sphere = spheres[i];
+                    sphere.scale.multiplyScalar(0.98);
+                    sphere.scale.clampScalar(0.01, 1);
+                    sphere.material.color.r = i/100;
+                    sphere.material.color.b = (6.375*i)/500;
+                    sphere.material.color.g =  Math.abs(sphere.material.color.g - sphere.material.color.b)/255;
+                    sphere.material.needsUpdate = true;
+                    //console.log(sphere.material.color)
+                    sphere.rotation.y = time * (i < 4 ? i + 1 : -(i + 1));
+                }
+
+                toggle += clock.getDelta();
+                setTimeout(() => {
+                    requestAnimationFrame(tick);
+                }, 1000 / 30);
+                composer.render(); //renderer.render(scene, camera);
+            }
+            tick();
+        }
+        init();
+    </script>
+</body>
+
+</html>

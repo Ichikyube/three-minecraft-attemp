@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="container"></div>
+
+
+    <script type="x-shader/x-vertex" id="vertexshader">
+
+        attribute float size;
+    attribute vec3 customColor;
+    
+    varying vec3 vColor;
+    
+    void main() {
+    
+        vColor = customColor;
+    
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+    
+        gl_PointSize = size * ( 300.0 / -mvPosition.z );
+    
+        gl_Position = projectionMatrix * mvPosition;
+    
+    }
+    
+    </script>
+
+    <script type="x-shader/x-fragment" id="fragmentshader">
+
+        uniform vec3 color;
+    uniform sampler2D pointTexture;
+    uniform float alphaTest;
+    
+    varying vec3 vColor;
+    
+    void main() {
+    
+        gl_FragColor = vec4( color * vColor, 1.0 );
+    
+        gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
+    
+        if ( gl_FragColor.a < alphaTest ) discard;
+    
+    }
+    
+    </script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./assets/js/three.module.js",
+                "vendor/": "./assets/vendor/",
+                "addons/": "./assets/jsm/",
+                "parts/": "./Components/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+
+        import {
+            GLTFLoader
+        } from 'addons/loaders/GLTFLoader.js';
+        import {
+            ShadowMapViewer
+        } from 'addons/utils/ShadowMapViewer.js';
+        import {
+            Octree
+        } from 'addons/math/Octree.js';
+        import {
+            OctreeHelper
+        } from 'addons/helpers/OctreeHelper.js';
+        import {
+            TWEEN
+        } from 'addons/libs/tween.module.min.js';
+        import {
+            buildingWorldofBlocks,
+            addingGrass
+        } from 'parts/ground/Blocks.js';
+        import {
+            initLights
+        } from 'parts/Lights/Light1.js';
+        import {
+            initScene,
+            initRender,
+            makePlayer,
+            initGui,
+            render
+        } from 'parts/renderer/Render.js';
+
+        let chunkSize = 10;
+        const worldOctree = new Octree();
+        // Objects
+        const objects = [];
+        const lights = [];
+        const helpers = [];
+        const animateTasks = [];
+        const materials = [];
+        const params = []
+        let player, scene;
+        let sceneAlpha = new THREE.Scene();
+        ////////////////////////////////////////////////////////
+        function init() {
+            // create a scene, that will hold all our elements such as objects, cameras and lights.
+            scene = initScene('mineland', 'front', 'back', 'up', 'down', 'left', 'right');
+            //renderer.autoClear = false; // To allow render overlay on top of sprited sphere
+            initRender(sceneAlpha);
+            ///////////////////////////////////////////////////////////////////////////////
+            initLights(lights, helpers, animateTasks);
+            lights.forEach(function (light) {
+                scene.add(light);
+            })
+            objects.forEach(function (object) {
+                scene.add(object);
+            })
+            let showHelper = false;
+            if (showHelper) {
+                helpers.forEach(function (helper) {
+                    scene.add(helper);
+                    helper.parent.updateMatrixWorld();
+                    helper.update();
+                })
+            }
+            ////////////////////////////////////////////////////////////////////////////////
+            let out = buildingWorldofBlocks();
+            let Ground = out.mesh;
+            let grassBase = out.Base;
+            Ground.receiveShadow = true;
+            scene.add(Ground);
+            worldOctree.fromGraphNode(Ground);
+            player = makePlayer();
+            addingGrass(sceneAlpha, grassBase, player.camera);
+
+            ///////////////////////////////////////////////////////////////////////////////
+            let clock = new THREE.Clock();
+            const STEPS_PER_FRAME = 5;
+
+            function update(deltaTime) {
+                let timeElapsedS = clock.getElapsedTime();
+                for (let i = 0; i < STEPS_PER_FRAME; i++) {
+                    player.controller(deltaTime);
+                    player.checkCollision(worldOctree);
+                    player.updateMovement(deltaTime);
+                    player.updateHeadBob_(timeElapsedS);
+                    animateTasks.forEach(function (onTask) {
+                        onTask(deltaTime)
+                    })
+                }
+            }
+            //initGui();
+            ///////////////////////////////////////////////////////////////////////////////
+            let maxDelta = 0.05; // measure time - never notify more than this.maxDelta
+            function tick() {
+                const deltaTime = Math.min(maxDelta, clock.getDelta()) / STEPS_PER_FRAME;
+                update(deltaTime);
+                render(sceneAlpha);
+                setTimeout(() => {
+                    requestAnimationFrame(tick);
+                }, 1000 / 30);
+            }
+            tick();
+        }
+        init();
+    </script>
+</body>
+
+</html>

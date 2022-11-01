@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "": [
+			{ "model": "biomesoplenty:block/willow_leaves" },
+			{ "model": "biomesoplenty:block/willow_leaves_1" },
+			{ "model": "biomesoplenty:block/willow_leaves_2" },
+			{ "model": "biomesoplenty:block/willow_leaves_3" }
+		
+		]
+    }
+}

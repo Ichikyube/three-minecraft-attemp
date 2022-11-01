@@ -1,0 +1,21 @@
+{
+	"__comment": "Designed by Filmjolk",
+	"textures": {
+		"particle": "block/dark_oak_door_top",
+		"texture": "block/dark_oak_door_top"
+	},
+	"elements": [
+		{
+			"__comment": "Cube1",
+			"from": [ 0, 0, 0 ],
+			"to": [ 3, 16, 16 ],
+			"faces": {
+				"up": { "uv": [ 0, 2, 16, 5.5 ], "texture": "#texture", "rotation": 270 },
+				"north": { "uv": [ 2.5, 0, 0, 16 ], "texture": "#texture" },
+				"south": { "uv": [ 0, 0, 2.5, 16 ], "texture": "#texture" },
+				"west": { "uv": [ 0, 0, 16, 16 ], "texture": "#texture" },
+				"east": { "uv": [ 16, 0, 0, 16 ], "texture": "#texture" }
+			}
+		}
+	]
+}

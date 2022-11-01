@@ -1,0 +1,14 @@
+{
+    "variants": {
+        "": [
+            { "model": "block/waterlily", "weight": 100 },
+            { "model": "block/waterlily", "y": 90, "weight": 100 },
+            { "model": "block/waterlily", "y": 180, "weight": 100 },
+            { "model": "block/waterlily", "y": 270, "weight": 100 },
+            { "model": "block/waterlily2", "weight": 1 },
+			{ "model": "block/waterlily2", "y": 90, "weight": 1 },
+			{ "model": "block/waterlily2", "y": 180, "weight": 1 },
+			{ "model": "block/waterlily2", "y": 270, "weight": 1 }
+        ]
+    }
+}

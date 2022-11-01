@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "": [
+			{ "model": "biomesoplenty:block/orange_autumn_leaves" },
+			{ "model": "biomesoplenty:block/orange_autumn_leaves_1" },
+			{ "model": "biomesoplenty:block/orange_autumn_leaves_2" },
+			{ "model": "biomesoplenty:block/orange_autumn_leaves_3" },
+			{ "model": "biomesoplenty:block/orange_autumn_leaves_4" }
+		
+		]
+    }
+}

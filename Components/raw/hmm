@@ -1,0 +1,69 @@
+
+export function buildingWorldofBlocks(world) {
+  const matrix = new THREE.Matrix4();
+  const shape = new CANNON.Plane();
+  const body = new CANNON.Body({
+      type: CANNON.Body.STATIC
+  });
+
+  const pxGeometry = new THREE.PlaneGeometry(100, 100);
+  pxGeometry.attributes.uv.array[1] = 0.5;
+  pxGeometry.attributes.uv.array[3] = 0.5;
+  pxGeometry.rotateY(Math.PI / 2);
+  pxGeometry.translate(50, 0, 0);
+  ///////////////////////////////new CANNON.Vec3(0, 1, 0), Math.PI / 32
+  body.addShape(shape, new CANNON.Vec3( s, 0, 0), new 
+      CANNON.Quaternion(new CANNON.Vec3(0, 1, 0), Math.PI / 2));
+  //pxBody.quaternion.setFromEuler(0,Math.PI / 2, 0)
+  //pxBody.position.copy(pxGeometry.attributes.position)
+
+  const nxGeometry = new THREE.PlaneGeometry(100, 100);
+  nxGeometry.attributes.uv.array[1] = 0.5;
+  nxGeometry.attributes.uv.array[3] = 0.5;
+  nxGeometry.rotateY(-Math.PI / 2);
+  nxGeometry.translate(-50, 0, 0);
+  ///////////////////////////////
+  body.addShape(shape, new CANNON.Vec3( -s, 0, 0), new 
+      CANNON.Quaternion(new CANNON.Vec3(0, 1, 0), -Math.PI / 2));
+
+  const pyGeometry = new THREE.PlaneGeometry(100, 100);
+  pyGeometry.attributes.uv.array[5] = 0.5;
+  pyGeometry.attributes.uv.array[7] = 0.5;
+  pyGeometry.rotateX(-Math.PI / 2);
+  pyGeometry.translate(0, 50, 0);
+  ///////////////////////////////
+  body.addShape(shape, new CANNON.Vec3( 0, s, 0), new 
+      CANNON.Quaternion(new CANNON.Vec3(1, 0, 0), -Math.PI / 2));
+
+  const pzGeometry = new THREE.PlaneGeometry(100, 100);
+  pzGeometry.attributes.uv.array[1] = 0.5;
+  pzGeometry.attributes.uv.array[3] = 0.5;
+  pzGeometry.translate(0, 0, 50);
+  ///////////////////////////////
+  body.addShape(shape, new CANNON.Vec3( 0, 0, s));
+
+  const nzGeometry = new THREE.PlaneGeometry(100, 100);
+  nzGeometry.attributes.uv.array[1] = 0.5;
+  nzGeometry.attributes.uv.array[3] = 0.5;
+  nzGeometry.rotateY(Math.PI);
+  nzGeometry.translate(0, 0, -50);
+  ///////////////////////////////
+  body.addShape(shape, new CANNON.Vec3( 0, 0, -s), new 
+      CANNON.Quaternion(new CANNON.Vec3(0, 1, 0), Math.PI));    
+  //
+  const geometries = [];
+  const bodies = [];
+
+  cubeMeshes.forEach((m, i) => {
+      m.position.set(
+          cubeBodies[i].position.x,
+          cubeBodies[i].position.y,
+          cubeBodies[i].position.z
+      )
+      m.quaternion.set(
+          cubeBodies[i].quaternion.x,
+          cubeBodies[i].quaternion.y,
+          cubeBodies[i].quaternion.z,
+          cubeBodies[i].quaternion.w
+      )
+  })

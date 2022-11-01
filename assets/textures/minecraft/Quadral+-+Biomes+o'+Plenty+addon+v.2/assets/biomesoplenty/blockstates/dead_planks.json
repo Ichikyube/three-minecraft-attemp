@@ -1,0 +1,10 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/dead_planks" },
+		{ "model": "biomesoplenty:block/dead_planks_1" },
+		{ "model": "biomesoplenty:block/dead_planks_2" },
+		{ "model": "biomesoplenty:block/dead_planks_3" }
+		]
+    }
+}

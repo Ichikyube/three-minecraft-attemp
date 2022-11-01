@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./assets/js/three.module.js",
+                "vendor/": "./assets/vendor/",
+                "addons/": "./assets/jsm/",
+                "parts/": "./Components/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import {
+            PointerLockControls
+        } from 'addons/controls/PointerLockControls.js';
+        import {
+            OrbitControls
+        } from 'addons/controls/OrbitControls.js';
+
+        const objects = [];
+
+        let raycaster;
+
+        var camera,
+            cameraTarget = new THREE.Vector3(),
+            cameraControls,
+            cameraLookAround = true,
+            cameraLimit = 2000;
+
+        var WIDTH = window.innerWidth,
+            HEIGHT = window.innerHeight;
+
+        var player,
+            playerMesh,
+            playerOrigin = new THREE.Vector3(),
+            playerControls = {
+                moveLeft: false,
+                moveForward: false,
+                moveRight: false,
+                moveBackward: false
+            },
+            debugPlayerMesh,
+            numPlayerSkins,
+            playerSkin = 11,
+            playerLimit = 4000;
+
+        var clock = new THREE.Clock(),
+            stepFrequency = 120;
+
+        // PLAYERS PHYSICS
+        var size = 80;
+        var shape = new CANNON.Sphere(size);
+        player = new CANNON.RigidBody(25, shape, physicsMaterial);
+        player.position.set(0, size, 0);
+        //player.linearDamping = 0.9;
+        world.add(player);
+
+
+        /*
+        // DEBUG: wireframe sphere
+        var geometry = new THREE.SphereGeometry( size );
+        var material = new THREE.MeshBasicMaterial({ wireframe: true, color: 0x444444 });
+        debugPlayerMesh = new THREE.Mesh( geometry, material );
+        debugPlayerMesh.position.set( 0, size, 0 );
+        debugPlayerMesh.useQuaternion = true;
+        scene.add( debugPlayerMesh );
+        */
+
+
+        let moveForward = false;
+        let moveBackward = false;
+        let moveLeft = false;
+        let moveRight = false;
+        let canJump = false;
+
+        let prevTime = performance.now();
+        const velocity = new THREE.Vector3();
+        const direction = new THREE.Vector3();
+        const vertex = new THREE.Vector3();
+        const color = new THREE.Color();
+
+        // CHARACTER
+        var configOgro = {
+            baseUrl: "models/animated/ogro/",
+            body: "ogro-light.js",
+            skins: ["grok.jpg", "ogrobase.png", "arboshak.png",
+                "ctf_r.png", "ctf_b.png", "darkam.png", "freedom.png",
+                "gib.png", "gordogh.png", "igdosh.png", "khorne.png",
+                "nabogro.png", "sharokh.png"
+            ],
+            weapons: [
+                ["weapon-light.js", "weapon.jpg"]
+            ],
+            animations: {
+                move: "run",
+                idle: "stand",
+                jump: "jump",
+                attack: "attack",
+                crouchMove: "cwalk",
+                crouchIdle: "cstand",
+                crouchAttach: "crattack"
+            },
+            walkSpeed: 350,
+            crouchSpeed: 175
+        };
+
+        numPlayerSkins = configOgro.skins.length;
+
+        playerMesh = new THREE.MD2CharacterComplex();
+        playerMesh.scale = 3;
+        playerMesh.controls = playerControls;
+        playerOrigin.copy(playerMesh.root.position);
+        cameraTarget.copy(playerOrigin).setY(150);
+
+        var baseCharacter = new THREE.MD2CharacterComplex();
+        baseCharacter.scale = 3;
+
+        baseCharacter.onLoadComplete = function () {
+            var cloneCharacter = playerMesh;
+            cloneCharacter.shareParts(baseCharacter);
+            cloneCharacter.enableShadows(true);
+            //cloneCharacter.setWeapon(0);
+            cloneCharacter.setSkin(playerSkin);
+            scene.add(cloneCharacter.root);
+
+            var gyro = new THREE.Gyroscope();
+            gyro.add(camera);
+
+            playerMesh.root.add(gyro);
+
+            // set initial player position.
+            playerMesh.root.position.x = -250;
+            playerMesh.root.position.z = -250;
+        };
+
+        function init() {
+            // create a scene, that will hold all our elements such as objects, cameras and lights.
+            let scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xcc55ee);
+            // create a camera, which defines where we're looking at
+            let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+            // tell the camera where to look
+            camera.position.set(0, 0, 20);
+            const sizes = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }
+            let renderer = new THREE.WebGLRenderer();
+            renderer.setSize(sizes.width, sizes.height);
+
+            // add the output of the render function to the HTML
+            document.body.appendChild(renderer.domElement);
+            let material = new THREE.MeshPhongMaterial({
+                color: 'red'
+            })
+            let Light = new THREE.AmbientLight('white', 0.35);
+            let PLight = new THREE.PointLight('white', 1, 100);
+            PLight.position.set(12, 15, 10);
+            scene.add(Light, PLight)
+            let materialMesh = new THREE.Mesh(
+                new THREE.BoxGeometry,
+                material
+            )
+            scene.add(materialMesh);
+            const size = 10;
+            const divisions = 10;
+
+            const gridHelper = new THREE.GridHelper(size, divisions);
+            scene.add(gridHelper);
+            var controls = new PointerLockControls(materialMesh, document.body);
+            var camcontrols = new OrbitControls(camera, renderer.domElement);
+
+            raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
+
+            scene.add(controls.getObject());
+
+            const onKeyDown = function (event) {
+
+                switch (event.code) {
+
+                    case 'ArrowUp':
+                    case 'KeyW':
+                        moveForward = true;
+                        break;
+
+                    case 'ArrowLeft':
+                    case 'KeyA':
+                        moveLeft = true;
+                        break;
+
+                    case 'ArrowDown':
+                    case 'KeyS':
+                        moveBackward = true;
+                        break;
+
+                    case 'ArrowRight':
+                    case 'KeyD':
+                        moveRight = true;
+                        break;
+
+                    case 'Space':
+                        if (canJump === true) velocity.y += 350;
+                        canJump = false;
+                        break;
+
+                }
+
+            };
+
+            const onKeyUp = function (event) {
+
+                switch (event.code) {
+
+                    case 'ArrowUp':
+                    case 'KeyW':
+                        moveForward = false;
+                        break;
+
+                    case 'ArrowLeft':
+                    case 'KeyA':
+                        moveLeft = false;
+                        break;
+
+                    case 'ArrowDown':
+                    case 'KeyS':
+                        moveBackward = false;
+                        break;
+
+                    case 'ArrowRight':
+                    case 'KeyD':
+                        moveRight = false;
+                        break;
+
+                }
+
+            };
+
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
+
+            //controls.update() must be called after any manual changes to the camera's transform
+            camera.position.set(0, 20, 100);
+            camcontrols.update();
+            // var clock = new THREE.Clock();
+
+            // function for re-rendering/animating the scene
+            function tick() {
+                requestAnimationFrame(tick);
+                camcontrols.update();
+                materialMesh.setRotationFromMatrix(camera.matrix)
+                const time = performance.now();
+                camera.lookAt(0, materialMesh.position.y, 0)
+
+                const delta = (time - prevTime) / 1000;
+
+                velocity.x -= velocity.x * 10.0 * delta;
+                velocity.z -= velocity.z * 10.0 * delta;
+
+                velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+                direction.z = Number(moveForward) - Number(moveBackward);
+                direction.x = Number(moveRight) - Number(moveLeft);
+                direction.normalize(); // this ensures consistent movements in all directions
+
+                if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
+                if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+
+                controls.moveRight(-velocity.x * delta);
+                controls.moveForward(-velocity.z * delta);
+
+                controls.getObject().position.y += (velocity.y * delta); // new behavior
+
+                if (controls.getObject().position.y < 10) {
+
+                    velocity.y = 0;
+                    controls.getObject().position.y = 10;
+
+                    canJump = true;
+
+                }
+
+
+
+                prevTime = time;
+                renderer.render(scene, camera);
+            }
+            tick();
+        }
+        init();
+    </script>
+</body>
+
+</html>

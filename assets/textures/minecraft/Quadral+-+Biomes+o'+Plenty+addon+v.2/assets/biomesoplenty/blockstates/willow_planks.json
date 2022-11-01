@@ -1,0 +1,9 @@
+{
+    "variants": {
+	    "": [
+		{ "model": "biomesoplenty:block/willow_planks" },
+		{ "model": "biomesoplenty:block/willow_planks_1" },
+		{ "model": "biomesoplenty:block/willow_planks_2" }
+		]
+    }
+}
